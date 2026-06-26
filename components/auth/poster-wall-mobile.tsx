@@ -12,6 +12,7 @@ import {
   SHADOW_LG,
   usePosterColumns,
 } from "@/components/auth/poster-wall-shared";
+import { t } from "@/i18n";
 
 const COLS = 3;
 const TILES_PER_COL = 8;
@@ -112,7 +113,7 @@ export function PosterWallMobile() {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <Eyebrow>
-              <RecDot /> Sign in
+              <RecDot /> {t.common.signIn}
             </Eyebrow>
             <h1
               style={{
@@ -125,9 +126,11 @@ export function PosterWallMobile() {
                 margin: 0,
               }}
             >
-              Your watchlist,
+              {t.auth.login.headingLine1}
               <br />
-              <span style={{ fontStyle: "italic" }}>properly kept.</span>
+              <span style={{ fontStyle: "italic" }}>
+                {t.auth.login.headingLine2}
+              </span>
             </h1>
             <p
               style={{
@@ -138,7 +141,7 @@ export function PosterWallMobile() {
                 margin: 0,
               }}
             >
-              Continue with Discord to access your library.
+              {t.auth.login.subheadingMobile}
             </p>
           </div>
 

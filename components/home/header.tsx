@@ -14,6 +14,7 @@ import { useWatchlist } from "@/hooks/use-watchlist";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useNavUI } from "@/lib/ui-store";
 import { cn } from "@/lib/utils";
+import { t } from "@/i18n";
 
 function navItemClass(active: boolean) {
   return cn(
@@ -73,20 +74,20 @@ export function Header({
         <div className="flex flex-1 items-center gap-8">
           <Link
             href="/"
-            aria-label="awatch.fun home"
+            aria-label={t.home.header.a11y.brandHome}
             className="text-lg font-semibold tracking-[-0.025em] text-white select-none hover:text-white"
           >
             awatch<span className="text-marquee">.</span>fun
           </Link>
           <nav className="hidden gap-1 md:flex">
             <Link href="/" className={navItemClass(active === "home")}>
-              Home
+              {t.home.nav.home}
             </Link>
             <Link
               href="/discover"
               className={navItemClass(active === "discover")}
             >
-              Discover
+              {t.home.nav.discover}
             </Link>
             {user && (
               <>
@@ -94,13 +95,13 @@ export function Header({
                   href="/watchlist"
                   className={navItemClass(active === "watchlist")}
                 >
-                  Watchlist
+                  {t.home.nav.watchlist}
                 </Link>
                 <Link
                   href="/calendar"
                   className={navItemClass(active === "calendar")}
                 >
-                  Calendar
+                  {t.home.nav.calendar}
                 </Link>
               </>
             )}
@@ -115,7 +116,7 @@ export function Header({
               size={36}
               variant="ghost"
               onClick={() => setSearchOpen(true)}
-              aria-label="Search"
+              aria-label={t.home.header.a11y.search}
             >
               <Search />
             </HomeIconButton>
@@ -132,7 +133,7 @@ export function Header({
           >
             <Search size={13} className="shrink-0 text-muted-foreground/70" />
             <span className="flex-1 truncate text-[13px] text-muted-foreground/70">
-              Search movies and shows&hellip;
+              {t.home.header.searchPlaceholder}
             </span>
             <kbd className="border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
               &#8984;K
@@ -148,7 +149,7 @@ export function Header({
                     size={36}
                     variant={scrolled ? "outline" : "outlineLight"}
                     className="relative"
-                    aria-label="Notifications"
+                    aria-label={t.home.header.a11y.notifications}
                   >
                     <Bell />
                     {hasUnread && (
@@ -164,7 +165,7 @@ export function Header({
                 size={36}
                 variant="ghost"
                 onClick={() => setDrawerOpen(true)}
-                aria-label="Open menu"
+                aria-label={t.home.header.a11y.openMenu}
               >
                 <Menu />
               </HomeIconButton>
@@ -178,7 +179,7 @@ export function Header({
                     <button
                       type="button"
                       className="flex items-center gap-1.5 pl-1 outline-none transition-opacity hover:opacity-80 data-open:opacity-90"
-                      aria-label="Account menu"
+                      aria-label={t.home.header.a11y.accountMenu}
                     >
                       <Avatar size="sm">
                         <AvatarImage src={user.avatar} alt={user.username} />
@@ -201,10 +202,10 @@ export function Header({
                 href="/"
                 className="hidden px-1.5 text-[13px] font-medium text-white md:inline"
               >
-                Browse
+                {t.home.nav.browse}
               </Link>
               <HomeButton asChild variant="secondary" size="sm" href="/login">
-                <LogIn /> Sign in
+                <LogIn /> {t.common.signIn}
               </HomeButton>
             </>
           )}

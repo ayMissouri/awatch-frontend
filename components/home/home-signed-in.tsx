@@ -20,6 +20,7 @@ import {
 } from "@/lib/watchlist-status";
 import { useAuthStore } from "@/lib/store";
 import type { DiscoverAllResponse, DiscoverItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 function toPosterItem(item: DiscoverItem) {
   return {
@@ -97,7 +98,7 @@ export function HomeSignedIn() {
           <section className="mt-9 md:mt-14">
             <div className="mb-3.5 flex items-baseline justify-between md:mb-[18px]">
               <h2 className="font-display text-2xl leading-none tracking-[-0.005em] text-foreground md:text-[32px]">
-                Continue watching
+                {t.home.rails.continueWatching}
               </h2>
               <SeeAll />
             </div>
@@ -110,7 +111,7 @@ export function HomeSignedIn() {
         )}
 
         {upNext.length > 0 && (
-          <CardRow title="Up next" action={<SeeAll />}>
+          <CardRow title={t.home.rails.upNext} action={<SeeAll />}>
             {upNext.map((item) => (
               <UpNextCard key={item.id} item={item} />
             ))}
@@ -125,24 +126,24 @@ export function HomeSignedIn() {
         ) : (
           <>
             <PosterRow
-              title="Popular movies"
+              title={t.home.rails.popularMovies}
               items={discover.popular_movies.map(toPosterItem)}
-              action={<SeeAll>All movies</SeeAll>}
+              action={<SeeAll>{t.home.rails.allMovies}</SeeAll>}
             />
             <PosterRow
-              title="Popular shows"
+              title={t.home.rails.popularShows}
               items={discover.popular_shows.map(toPosterItem)}
-              action={<SeeAll>All shows</SeeAll>}
+              action={<SeeAll>{t.home.rails.allShows}</SeeAll>}
             />
             <PosterRow
-              title="Top-rated movies"
+              title={t.home.rails.topRatedMovies}
               items={discover.top_rated_movies.map(toPosterItem)}
-              action={<SeeAll>All time</SeeAll>}
+              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
             />
             <PosterRow
-              title="Top-rated shows"
+              title={t.home.rails.topRatedShows}
               items={discover.top_rated_shows.map(toPosterItem)}
-              action={<SeeAll>All time</SeeAll>}
+              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
             />
           </>
         )}

@@ -7,11 +7,12 @@ import { Star, Plus, Info } from "lucide-react";
 import { HomeButton, homeButtonVariants } from "@/components/home/home-button";
 import { cn, detailHref } from "@/lib/utils";
 import type { DiscoverItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 const SLIDE_DURATION = 7000;
 
 function typeLabel(type: string) {
-  return type === "movie" ? "Movie" : "Show";
+  return type === "movie" ? t.home.typeLabel.movie : t.home.typeLabel.show;
 }
 
 export function HeroCarousel({ items }: { items: DiscoverItem[] }) {
@@ -62,7 +63,7 @@ export function HeroCarousel({ items }: { items: DiscoverItem[] }) {
             <div className="mx-auto max-w-[1440px] px-5 md:px-12">
               <div className="pointer-events-auto flex max-w-[720px] flex-col gap-3.5">
                 <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-white/75 uppercase">
-                  Trending now
+                  {t.home.hero.trendingNow}
                 </span>
                 <h1 className="font-display text-[44px] leading-[0.92] tracking-[-0.01em] text-white md:text-[92px]">
                   {item.title}
@@ -88,14 +89,14 @@ export function HeroCarousel({ items }: { items: DiscoverItem[] }) {
                       "w-full md:w-auto",
                     )}
                   >
-                    <Info /> View details
+                    <Info /> {t.home.hero.viewDetails}
                   </Link>
                   <HomeButton
                     variant="outlineLight"
                     size="lg"
                     className="w-full md:w-auto"
                   >
-                    <Plus /> Add to watchlist
+                    <Plus /> {t.home.hero.addToWatchlist}
                   </HomeButton>
                 </div>
               </div>
@@ -109,7 +110,7 @@ export function HeroCarousel({ items }: { items: DiscoverItem[] }) {
             {items.map((_, i) => (
               <button
                 key={i}
-                aria-label={`Show slide ${i + 1}`}
+                aria-label={t.home.hero.slideLabel(i + 1)}
                 onClick={() => setActive(i)}
                 className={cn(
                   "h-1 w-6 cursor-pointer transition-colors",

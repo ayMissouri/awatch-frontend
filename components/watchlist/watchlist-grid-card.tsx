@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SlidersHorizontal, Trash2 } from "lucide-react";
+import { t } from "@/i18n";
 import { WatchlistCheckbox } from "@/components/watchlist/checkbox";
 import { StatusMenu } from "@/components/watchlist/status-menu";
 import { StatusPill } from "@/components/watchlist/status-pill";
@@ -104,7 +105,7 @@ export function WatchlistGridCard({
                   type="button"
                   className="inline-flex h-[30px] flex-1 items-center justify-center gap-1.5 bg-neutral-50 text-xs font-semibold text-neutral-950 transition-colors hover:bg-neutral-200"
                 >
-                  <SlidersHorizontal size={12} /> Status
+                  <SlidersHorizontal size={12} /> {t.watchlist.card.status}
                 </button>
               }
             />
@@ -114,7 +115,7 @@ export function WatchlistGridCard({
                 e.stopPropagation();
                 onRemove(item.id);
               }}
-              title="Remove"
+              title={t.watchlist.card.remove}
               className="inline-flex h-[30px] w-[30px] items-center justify-center border border-white/25 bg-black/50 transition-colors hover:border-white/40 hover:bg-black/70"
             >
               <Trash2 size={13} className="text-white" />
@@ -135,7 +136,9 @@ export function WatchlistGridCard({
           {item.title}
         </Link>
         <div className="font-mono text-[9px] tracking-wide text-muted-foreground uppercase">
-          {item.type === "tv" ? "Series" : "Film"}
+          {item.type === "tv"
+            ? t.watchlist.mediaType.series
+            : t.watchlist.mediaType.film}
         </div>
       </div>
     </div>

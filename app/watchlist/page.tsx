@@ -13,6 +13,7 @@ import {
   Tv,
   X,
 } from "lucide-react";
+import { t } from "@/i18n";
 import { Header } from "@/components/home/header";
 import { HomeButton } from "@/components/home/home-button";
 import { MobileBottomNav } from "@/components/home/mobile-bottom-nav";
@@ -170,7 +171,7 @@ export default function WatchlistPage() {
     if (!item) return;
     const prevStatus = item.status;
     updateStatus.mutate({ id, status });
-    flashToast(`Moved to ${STATUS_META[status].label}`, () =>
+    flashToast(t.watchlist.toast.movedTo(STATUS_META[status].label), () =>
       updateStatus.mutate({ id, status: prevStatus }),
     );
   };
@@ -184,7 +185,9 @@ export default function WatchlistPage() {
       next.delete(id);
       return next;
     });
-    flashToast(`Removed ${item.title}`, () => restoreItem.mutate(item));
+    flashToast(t.watchlist.toast.removed(item.title), () =>
+      restoreItem.mutate(item),
+    );
   };
 
   const handleBulkStatus = (status: WatchlistStatus) => {
@@ -194,7 +197,7 @@ export default function WatchlistPage() {
       status: items.find((it) => it.id === id)?.status,
     }));
     ids.forEach((id) => updateStatus.mutate({ id, status }));
-    flashToast(`${ids.length} moved to ${STATUS_META[status].label}`, () => {
+    flashToast(t.watchlist.toast.bulkMovedTo(ids.length, STATUS_META[status].label), () => {
       prevStatuses.forEach(
         ({ id, status: prev }) =>
           prev && updateStatus.mutate({ id, status: prev }),
@@ -210,7 +213,7 @@ export default function WatchlistPage() {
       .map((id) => items.find((it) => it.id === id))
       .filter((it): it is WatchlistItem => !!it);
     bulkDelete.mutate(ids);
-    flashToast(`${ids.length} removed`, () =>
+    flashToast(t.watchlist.toast.bulkRemoved(ids.length), () =>
       removed.forEach((it) => restoreItem.mutate(it)),
     );
     setSelected(new Set());
@@ -255,7 +258,7 @@ export default function WatchlistPage() {
   const grouped = tab === "all";
 
   const tabs: { id: Tab; label: string; status?: WatchlistStatus }[] = [
-    { id: "all", label: "All" },
+    { id: "all", label: t.watchlist.filter.all },
     ...STATUS_ORDER.map((s) => ({
       id: s as Tab,
       label: STATUS_META[s].label,
@@ -306,14 +309,14 @@ export default function WatchlistPage() {
         <div className="mb-7 flex flex-wrap items-end justify-between gap-6">
           <div>
             <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-marquee uppercase">
-              Your library
+              {t.watchlist.hero.eyebrow}
             </span>
             <h1 className="mt-2.5 font-display text-[44px] leading-none tracking-[-0.01em] text-foreground md:text-[64px]">
-              Watchlist
+              {t.watchlist.hero.title}
             </h1>
             <div className="mt-4 flex flex-wrap items-center gap-4">
               <span className="font-mono text-xs text-muted-foreground">
-                {items.length} titles
+                {t.watchlist.hero.titleCount(items.length)}
               </span>
               {items.length > 0 && (
                 <>
@@ -329,7 +332,7 @@ export default function WatchlistPage() {
             </div>
           </div>
           <HomeButton variant="primary" size="lg">
-            <Plus /> Add titles
+            <Plus /> {t.watchlist.hero.addTitles}
           </HomeButton>
         </div>
 
@@ -341,7 +344,7 @@ export default function WatchlistPage() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search your watchlist…"
+                placeholder={t.watchlist.toolbar.searchPlaceholder}
                 className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
               />
               {query && (
@@ -360,9 +363,17 @@ export default function WatchlistPage() {
                   value={typeFilter}
                   onChange={setTypeFilter}
                   items={[
-                    { id: "all", label: "All" },
-                    { id: "movie", label: "Movies", icon: <Film size={14} /> },
-                    { id: "tv", label: "Shows", icon: <Tv size={14} /> },
+                    { id: "all", label: t.watchlist.filter.all },
+                    {
+                      id: "movie",
+                      label: t.watchlist.filter.movies,
+                      icon: <Film size={14} />,
+                    },
+                    {
+                      id: "tv",
+                      label: t.watchlist.filter.shows,
+                      icon: <Tv size={14} />,
+                    },
                   ]}
                 />
               </div>
@@ -375,12 +386,12 @@ export default function WatchlistPage() {
                     {
                       id: "list",
                       icon: <List size={14} />,
-                      title: "List view",
+                      title: t.watchlist.toolbar.listView,
                     },
                     {
                       id: "grid",
                       icon: <Grid2x2 size={14} />,
-                      title: "Grid view",
+                      title: t.watchlist.toolbar.gridView,
                     },
                   ]}
                 />
@@ -398,34 +409,34 @@ export default function WatchlistPage() {
                 }`}
               >
                 <CircleCheck size={14} />
-                {selectMode ? "Done" : "Select"}
+                {selectMode ? t.watchlist.toolbar.done : t.watchlist.toolbar.select}
               </button>
             </div>
           </div>
 
           <div className="hidden items-center gap-1 overflow-x-auto border-b border-border md:flex">
-            {tabs.map((t) => {
-              const active = tab === t.id;
+            {tabs.map((tabItem) => {
+              const active = tab === tabItem.id;
               return (
                 <button
-                  key={t.id}
+                  key={tabItem.id}
                   type="button"
-                  onClick={() => setTab(t.id)}
+                  onClick={() => setTab(tabItem.id)}
                   className={`-mb-px inline-flex items-center gap-2 border-b-2 px-3.5 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors ${
                     active
                       ? "border-foreground text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {t.status && (
+                  {tabItem.status && (
                     <span
-                      className={`size-1.5 rounded-full ${STATUS_META[t.status].dot}`}
+                      className={`size-1.5 rounded-full ${STATUS_META[tabItem.status].dot}`}
                       style={{ opacity: active ? 1 : 0.6 }}
                     />
                   )}
-                  {t.label}
+                  {tabItem.label}
                   <span className="font-mono text-[11px] text-muted-foreground/70">
-                    {counts[t.id] ?? 0}
+                    {counts[tabItem.id] ?? 0}
                   </span>
                 </button>
               );
@@ -447,17 +458,19 @@ export default function WatchlistPage() {
           query.trim() ? (
             <EmptyState
               icon={Search}
-              title="No matches"
-              hint={`Nothing in your watchlist matches "${query}". Try a different title or clear the search.`}
+              title={t.watchlist.empty.noMatchesTitle}
+              hint={t.watchlist.empty.noMatchesHint(query)}
             />
           ) : (
             <EmptyState
               icon={Bookmark}
-              title="Nothing here yet"
+              title={t.watchlist.empty.nothingTitle}
               hint={
                 tab === "all"
-                  ? "Your watchlist is empty. Browse and add a few titles to get started."
-                  : `You have no ${STATUS_META[tab as WatchlistStatus]?.label.toLowerCase()} titles right now.`
+                  ? t.watchlist.empty.nothingAllHint
+                  : t.watchlist.empty.nothingStatusHint(
+                      STATUS_META[tab as WatchlistStatus]?.label.toLowerCase(),
+                    )
               }
             />
           )

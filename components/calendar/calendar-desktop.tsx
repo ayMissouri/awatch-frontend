@@ -17,6 +17,7 @@ import { CalendarEmpty } from "./empty-state";
 import { MonthGrid } from "./month-grid";
 import { useCalendarModel } from "./use-calendar-model";
 import { type CalendarRelease, MONTHS, MONTHS_SHORT } from "./calendar-data";
+import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 export function CalendarDesktop({
@@ -38,14 +39,13 @@ export function CalendarDesktop({
       <div className="mb-7 flex flex-wrap items-end justify-between gap-6">
         <div>
           <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-marquee uppercase">
-            Coming up
+            {t.calendar.hero.eyebrow}
           </span>
           <h1 className="mt-2.5 font-display text-[44px] leading-none tracking-[-0.01em] text-foreground md:text-[64px]">
-            On the calendar
+            {t.calendar.hero.title}
           </h1>
           <p className="mt-3.5 max-w-115 text-[14.5px] leading-relaxed text-muted-foreground">
-            Premieres and new episodes from your watchlist, by the date they
-            land.
+            {t.calendar.hero.description}
           </p>
         </div>
         <div className="text-right">
@@ -53,7 +53,7 @@ export function CalendarDesktop({
             {m.upcomingCount}
           </div>
           <div className="mt-1.5 font-mono text-[10px] tracking-[0.1em] text-muted-foreground/70 uppercase">
-            upcoming
+            {t.calendar.hero.upcoming}
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ export function CalendarDesktop({
                   type="button"
                   onClick={() => m.setMonthIdx(Math.max(0, m.monthIdx - 1))}
                   disabled={m.monthIdx === 0}
-                  title="Previous month"
+                  title={t.calendar.toolbar.prevMonth}
                   className="inline-flex size-[34px] items-center justify-center border-r border-border transition-colors enabled:hover:bg-white/[0.04] disabled:opacity-35"
                 >
                   <ChevronLeft size={15} className="text-muted-foreground" />
@@ -79,7 +79,7 @@ export function CalendarDesktop({
                     m.setMonthIdx(Math.min(m.months.length - 1, m.monthIdx + 1))
                   }
                   disabled={m.monthIdx === m.months.length - 1}
-                  title="Next month"
+                  title={t.calendar.toolbar.nextMonth}
                   className="inline-flex size-[34px] items-center justify-center transition-colors enabled:hover:bg-white/[0.04] disabled:opacity-35"
                 >
                   <ChevronRight size={15} className="text-muted-foreground" />
@@ -97,18 +97,20 @@ export function CalendarDesktop({
                   onClick={() => m.setMonthIdx(0)}
                   className="h-[30px] border border-border bg-card px-3 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-white/25 hover:text-foreground"
                 >
-                  Today
+                  {t.calendar.toolbar.today}
                 </button>
               )}
               <span className="ml-1 font-mono text-[11px] text-muted-foreground/70">
-                {m.monthCount} release{m.monthCount === 1 ? "" : "s"}
+                {t.calendar.releaseCount(m.monthCount)}
               </span>
             </div>
           ) : (
             <h2 className="flex items-baseline gap-3 font-display text-3xl leading-none text-foreground">
-              Upcoming
+              {t.calendar.toolbar.upcomingHeading}
               <span className="font-mono text-[13px] text-muted-foreground/70">
-                from {MONTHS_SHORT[m.today0.getMonth()]} {m.today0.getDate()}
+                {t.calendar.toolbar.from(
+                  `${MONTHS_SHORT[m.today0.getMonth()]} ${m.today0.getDate()}`,
+                )}
               </span>
             </h2>
           )}
@@ -118,7 +120,7 @@ export function CalendarDesktop({
               type="button"
               onClick={onRefresh}
               disabled={refreshing}
-              title="Sync from watchlist"
+              title={t.calendar.toolbar.sync}
               className="inline-flex size-[34px] items-center justify-center border border-border bg-card text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
             >
               <RefreshCw
@@ -130,9 +132,17 @@ export function CalendarDesktop({
               value={m.typeFilter}
               onChange={m.setTypeFilter}
               items={[
-                { id: "all", label: "All" },
-                { id: "tv", label: "Episodes", icon: <Tv size={14} /> },
-                { id: "movie", label: "Movies", icon: <Film size={14} /> },
+                { id: "all", label: t.calendar.filters.all },
+                {
+                  id: "tv",
+                  label: t.calendar.filters.episodes,
+                  icon: <Tv size={14} />,
+                },
+                {
+                  id: "movie",
+                  label: t.calendar.filters.movies,
+                  icon: <Film size={14} />,
+                },
               ]}
             />
             <Segmented
@@ -142,9 +152,13 @@ export function CalendarDesktop({
                 {
                   id: "month",
                   icon: <Grid2x2 size={14} />,
-                  title: "Month grid",
+                  title: t.calendar.views.month,
                 },
-                { id: "agenda", icon: <List size={14} />, title: "Agenda" },
+                {
+                  id: "agenda",
+                  icon: <List size={14} />,
+                  title: t.calendar.views.agenda,
+                },
               ]}
             />
           </div>
@@ -158,8 +172,8 @@ export function CalendarDesktop({
         m.monthCount === 0 ? (
           <CalendarEmpty
             icon={CalendarIcon}
-            title="Nothing this month"
-            hint="No releases from your watchlist land in this month. Jump to another month or switch to the agenda."
+            title={t.calendar.empty.nothingThisMonthTitle}
+            hint={t.calendar.empty.nothingThisMonthHint}
           />
         ) : (
           <MonthGrid
@@ -172,8 +186,8 @@ export function CalendarDesktop({
       ) : m.agenda.length === 0 ? (
         <CalendarEmpty
           icon={CalendarIcon}
-          title="Nothing upcoming"
-          hint="Nothing from your watchlist has an announced date yet. Hit sync to check for newly scheduled releases."
+          title={t.calendar.empty.nothingUpcomingTitle}
+          hint={t.calendar.empty.nothingUpcomingHint}
         />
       ) : (
         <AgendaView

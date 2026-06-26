@@ -34,6 +34,7 @@ import {
   type DetailEpisode,
 } from "@/components/detail/shared";
 import type { SeriesDetail, WatchlistItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 type Boundary = { season: number; episode: number } | null;
 
@@ -50,6 +51,8 @@ function statusKindOf(status?: string): "returning" | "ended" | "planned" {
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
+const nowMs = () => Date.now();
+
 export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
   const router = useRouter();
   const genres = s.genre ?? s.genres ?? [];
@@ -60,10 +63,12 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
   const [localBoundary, setLocalBoundary] = React.useState<
     Boundary | undefined
   >(undefined);
-  React.useEffect(
-    () => setLocalBoundary(undefined),
-    [itemLastSeason, itemLastEpisode],
-  );
+  const boundaryKey = `${itemLastSeason}:${itemLastEpisode}`;
+  const [prevBoundaryKey, setPrevBoundaryKey] = React.useState(boundaryKey);
+  if (boundaryKey !== prevBoundaryKey) {
+    setPrevBoundaryKey(boundaryKey);
+    setLocalBoundary(undefined);
+  }
   const boundary: Boundary =
     localBoundary !== undefined
       ? localBoundary
@@ -118,7 +123,7 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
     const status = showStatusFromEpisodes(episodesWatched, episodesTotal);
     const lastSeasonWatched = nextBoundary ? nextBoundary.season : minSeason;
     const lastEpisodeWatched = nextBoundary ? nextBoundary.episode : 0;
-    const lastUpdated = Date.now();
+    const lastUpdated = nowMs();
 
     if (item) {
       updateProgress.mutate(
@@ -155,9 +160,9 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
   const statusKind = statusKindOf(s.status);
   const statusShort =
     statusKind === "returning"
-      ? "Returning"
+      ? t.detail.status.returning
       : statusKind === "ended"
-        ? "Ended"
+        ? t.detail.status.ended
         : s.status;
   const pctDone = totalEps ? Math.round((watchedEps / totalEps) * 100) : 0;
 
@@ -226,7 +231,8 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
             }}
           >
             <Eyebrow color="var(--marquee-500)">
-              Series{s.releaseInfo ? ` · ${s.releaseInfo}` : ""}
+              {t.detail.eyebrow.series}
+              {s.releaseInfo ? ` · ${s.releaseInfo}` : ""}
             </Eyebrow>
             {statusShort && (
               <StatusPill kind={statusKind}>{statusShort}</StatusPill>
@@ -234,9 +240,13 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
             {inWatchlist &&
               watchedEps > 0 &&
               (watchedEps >= totalEps && totalEps > 0 ? (
-                <StatusPill kind="watched">Watched</StatusPill>
+                <StatusPill kind="watched">
+                  {t.detail.status.watched}
+                </StatusPill>
               ) : (
-                <StatusPill kind="watching">Watching</StatusPill>
+                <StatusPill kind="watching">
+                  {t.detail.status.watching}
+                </StatusPill>
               ))}
           </div>
           <h1
@@ -259,10 +269,8 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
               s.imdbRating ? (
                 <StarRating key="r" value={s.imdbRating} size={12} />
               ) : null,
-              seasons.length
-                ? `${seasons.length} season${seasons.length === 1 ? "" : "s"}`
-                : null,
-              totalEps ? `${totalEps} episodes` : null,
+              seasons.length ? t.detail.meta.seasons(seasons.length) : null,
+              totalEps ? t.detail.meta.episodes(totalEps) : null,
               genres.length ? (
                 <span
                   key="genre"
@@ -302,24 +310,27 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
       {/* PROGRESS MAP */}
       <section style={{ marginTop: 30 }}>
         <MSectionHead
-          title={`${watchedEps} of ${totalEps}`}
-          eyebrow="Your progress map"
-          right={`${pctDone}% done`}
+          title={t.detail.meta.countShort(watchedEps, totalEps)}
+          eyebrow={t.detail.sections.progressMap}
+          right={t.detail.meta.pctDone(pctDone)}
           style={{ marginBottom: 16 }}
         />
 
         {/* legend */}
         <div style={{ display: "flex", gap: 16, padding: `0 ${DPAD}px 16px` }}>
-          <Legend swatch="var(--marquee-500)" label="Watched" />
+          <Legend
+            swatch="var(--marquee-500)"
+            label={t.detail.legend.watched}
+          />
           <Legend
             swatch="rgba(228,79,47,0.22)"
             border="var(--marquee-500)"
-            label="Up next"
+            label={t.detail.legend.upNext}
           />
           <Legend
             swatch="transparent"
             border="var(--border-strong)"
-            label="Unseen"
+            label={t.detail.legend.unseen}
           />
         </div>
 
@@ -369,7 +380,7 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
                       }}
                     >
                       <Eyebrow color="var(--fg-subtle)">
-                        {season.total} episodes
+                        {t.detail.meta.episodes(season.total)}
                       </Eyebrow>
                       <span
                         style={{
@@ -380,7 +391,7 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
                           color: "var(--fg-strong)",
                         }}
                       >
-                        Season {pad2(season.season)}
+                        {t.detail.season.labelPadded(pad2(season.season))}
                       </span>
                     </div>
                     <div
@@ -481,8 +492,8 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
       {s.cast && s.cast.length > 0 && (
         <section style={{ marginTop: 32 }}>
           <MSectionHead
-            title="Cast"
-            right={`${s.cast.length} credited`}
+            title={t.detail.sections.cast}
+            right={t.detail.meta.credited(s.cast.length)}
             style={{ marginBottom: 14 }}
           />
           <MCastScroll cast={s.cast} />
@@ -494,19 +505,23 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
         <MMetaList
           rows={[
             s.director?.length
-              ? { label: "Creator", value: s.director.join(", ") }
+              ? { label: t.detail.labels.creator, value: s.director.join(", ") }
               : null,
             genres.length
-              ? { label: "Genres", value: genres.join(", ") }
+              ? { label: t.detail.labels.genres, value: genres.join(", ") }
               : null,
-            s.status ? { label: "Status", value: s.status } : null,
+            s.status ? { label: t.detail.labels.status, value: s.status } : null,
             s.released
-              ? { label: "First aired", value: s.released, mono: true }
+              ? { label: t.detail.labels.firstAired, value: s.released, mono: true }
               : null,
-            s.country ? { label: "Country", value: s.country } : null,
-            s.imdb_id ? { label: "IMDB", value: s.imdb_id, mono: true } : null,
+            s.country
+              ? { label: t.detail.labels.country, value: s.country }
+              : null,
+            s.imdb_id
+              ? { label: t.detail.labels.imdb, value: s.imdb_id, mono: true }
+              : null,
             s.moviedb_id != null
-              ? { label: "TMDB", value: s.moviedb_id, mono: true }
+              ? { label: t.detail.labels.tmdb, value: s.moviedb_id, mono: true }
               : null,
           ].filter((r): r is NonNullable<typeof r> => !!r)}
         />
@@ -530,8 +545,11 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
             }}
           >
             {next
-              ? `Play S${pad2(next.season)}E${pad2(next.episode)} — ${next.title}`
-              : "Rewatch from start"}
+              ? t.detail.playEpisode.label(
+                  `S${pad2(next.season)}E${pad2(next.episode)}`,
+                  next.title,
+                )
+              : t.detail.actions.rewatchFromStart}
           </span>
         </HomeButton>
         <HomeIconButton
@@ -540,7 +558,9 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
           onClick={toggleWatchlist}
           disabled={watchlistBusy}
           aria-label={
-            inWatchlist ? "Remove from watchlist" : "Add to watchlist"
+            inWatchlist
+              ? t.detail.actions.removeFromWatchlist
+              : t.detail.actions.addToWatchlist
           }
         >
           {inWatchlist ? <BookmarkCheck /> : <Bookmark />}

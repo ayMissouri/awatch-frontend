@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { ReleaseRow } from "./release-items";
 import {
@@ -56,7 +57,7 @@ export function AgendaView({
               </span>
               {isToday && (
                 <span className="mt-1 font-mono text-[9px] tracking-[0.14em] text-marquee uppercase">
-                  Today
+                  {t.calendar.agenda.today}
                 </span>
               )}
             </div>

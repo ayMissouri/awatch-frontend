@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { t } from "@/i18n";
 
 export interface ToastState {
   message: string;
@@ -25,7 +26,7 @@ export function WatchlistToast({
           }}
           className="text-[12.5px] font-semibold tracking-[0.04em] text-marquee-hover uppercase transition-opacity hover:opacity-70"
         >
-          Undo
+          {t.watchlist.toast.undo}
         </button>
       )}
       <button

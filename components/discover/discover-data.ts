@@ -1,3 +1,5 @@
+import { t } from "@/i18n";
+
 export type DiscoverMode = "genre" | "year" | "network";
 export type DiscoverType = "all" | "movie" | "tv";
 export type Curation = "popular" | "featured";
@@ -12,9 +14,9 @@ export interface DiscoverSelection {
 }
 
 export const DISCOVER_MODES: { id: DiscoverMode; label: string }[] = [
-  { id: "genre", label: "Genre" },
-  { id: "year", label: "Year" },
-  { id: "network", label: "Network" },
+  { id: "genre", label: t.discover.modes.genre },
+  { id: "year", label: t.discover.modes.year },
+  { id: "network", label: t.discover.modes.network },
 ];
 
 export const GENRES = [
@@ -46,8 +48,8 @@ export const NETWORK_LABEL: Record<string, string> = Object.fromEntries(
 );
 
 export const CURATIONS: { id: Curation; label: string }[] = [
-  { id: "popular", label: "Popular" },
-  { id: "featured", label: "Featured" },
+  { id: "popular", label: t.discover.curations.popular },
+  { id: "featured", label: t.discover.curations.featured },
 ];
 
 export function parseDiscoverParams(sp: URLSearchParams): DiscoverSelection {
@@ -91,7 +93,15 @@ export function parseDiscoverParams(sp: URLSearchParams): DiscoverSelection {
 
 export function discoverHeading(sel: DiscoverSelection): string {
   if (sel.mode === "genre")
-    return sel.genre ?? (sel.curation === "featured" ? "Featured" : "Popular");
-  if (sel.mode === "year") return sel.year ? String(sel.year) : "All years";
-  return sel.provider ? NETWORK_LABEL[sel.provider] : "All networks";
+    return (
+      sel.genre ??
+      (sel.curation === "featured"
+        ? t.discover.curations.featured
+        : t.discover.curations.popular)
+    );
+  if (sel.mode === "year")
+    return sel.year ? String(sel.year) : t.discover.heading.allYears;
+  return sel.provider
+    ? NETWORK_LABEL[sel.provider]
+    : t.discover.heading.allNetworks;
 }

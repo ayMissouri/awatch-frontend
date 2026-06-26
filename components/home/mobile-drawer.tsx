@@ -19,6 +19,7 @@ import { AppearanceToggle } from "@/components/home/nav-shared";
 import { useAuthStore } from "@/lib/store";
 import { useNavUI } from "@/lib/ui-store";
 import { cn } from "@/lib/utils";
+import { t } from "@/i18n";
 
 interface DrawerUser {
   username: string;
@@ -34,16 +35,16 @@ type DrawerNavItem = {
 };
 
 const PRIMARY_NAV: DrawerNavItem[] = [
-  { id: "home", icon: Film, label: "Home", href: "/" },
-  { id: "discover", icon: Search, label: "Discover", href: "/discover" },
+  { id: "home", icon: Film, label: t.home.nav.home, href: "/" },
+  { id: "discover", icon: Search, label: t.home.nav.discover, href: "/discover" },
   {
     id: "watchlist",
     icon: Bookmark,
-    label: "Watchlist",
+    label: t.home.nav.watchlist,
     href: "/watchlist",
     count: true,
   },
-  { id: "calendar", icon: Calendar, label: "Calendar", href: "/calendar" },
+  { id: "calendar", icon: Calendar, label: t.home.nav.calendar, href: "/calendar" },
 ];
 
 export function MobileDrawer({
@@ -123,7 +124,7 @@ export function MobileDrawer({
                 variant="ghost"
                 size={32}
                 onClick={close}
-                aria-label="Close menu"
+                aria-label={t.home.drawer.a11y.closeMenu}
               >
                 <X />
               </HomeIconButton>
@@ -155,7 +156,7 @@ export function MobileDrawer({
             >
               <Settings size={18} className="text-muted-foreground" />
               <span className="flex-1 text-[14.5px] font-medium text-muted-foreground">
-                Settings
+                {t.home.drawer.settings}
               </span>
             </button>
             <button
@@ -165,7 +166,7 @@ export function MobileDrawer({
             >
               <LogOut size={18} className="text-destructive" />
               <span className="flex-1 text-[14.5px] font-medium text-destructive">
-                Sign out
+                {t.common.signOut}
               </span>
             </button>
           </div>
@@ -173,7 +174,7 @@ export function MobileDrawer({
           {/* Appearance */}
           <div className="border-t border-border p-4">
             <div className="mb-2.5 font-mono text-[9px] tracking-[0.14em] text-muted-foreground/80 uppercase">
-              Appearance
+              {t.home.account.appearance}
             </div>
             <AppearanceToggle />
           </div>

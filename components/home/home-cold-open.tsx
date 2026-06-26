@@ -7,6 +7,7 @@ import { PosterRow, SeeAll } from "@/components/home/poster-row";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDiscoverAll } from "@/hooks/use-discover";
 import type { DiscoverItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -21,23 +22,7 @@ function toPosterItem(item: DiscoverItem) {
   };
 }
 
-const REASSURANCE = [
-  {
-    kicker: "01",
-    title: "Keep what you watch",
-    desc: "Mark titles watched, bookmark what's next. We track episode-by-episode progress without playing a frame.",
-  },
-  {
-    kicker: "02",
-    title: "Bring your taste",
-    desc: "Sign in once with Discord. Your watchlist is yours — no email, no password, no recommendation engine.",
-  },
-  {
-    kicker: "03",
-    title: "Browse, never bury",
-    desc: "Popular and top-rated, curated from TMDB. No autoplay. No infinite scroll.",
-  },
-];
+const REASSURANCE = t.home.coldOpen.reassurance;
 
 function Hero() {
   return (
@@ -46,16 +31,16 @@ function Hero() {
       <div className="absolute inset-0">
         <div className="mx-auto flex h-full max-w-[1440px] flex-col items-center justify-center gap-4 px-5 text-center md:gap-[22px] md:px-12">
           <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-white/78 uppercase">
-            An honest watchlist
+            {t.home.coldOpen.eyebrow}
           </span>
           <h1 className="max-w-[1100px] font-display text-[56px] leading-[0.88] tracking-[-0.015em] text-white md:text-[92px] lg:text-[132px]">
-            Track everything <span className="italic">you watch.</span>
+            {t.home.coldOpen.titleLine1}
+            <span className="italic">{t.home.coldOpen.titleEmphasis}</span>
             <br />
-            Nothing you don&rsquo;t.
+            {t.home.coldOpen.titleLine2}
           </h1>
           <span className="max-w-[540px] text-base leading-relaxed text-white/85">
-            A quiet, well-kept catalog for movies and shows. No streams, no
-            scrolls, no recommendations. Just your watchlist.
+            {t.home.coldOpen.subtitle}
           </span>
           <div className="mt-3.5 flex w-full flex-col gap-2 md:w-auto md:flex-row md:gap-2.5">
             <HomeButton
@@ -65,14 +50,14 @@ function Hero() {
               href={`${API_URL}/auth/login`}
               className="w-full md:w-auto"
             >
-              <LogIn /> Continue with Discord
+              <LogIn /> {t.home.coldOpen.continueWithDiscord}
             </HomeButton>
             <HomeButton
               variant="outlineLight"
               size="lg"
               className="w-full md:w-auto"
             >
-              Browse without signing in
+              {t.home.coldOpen.browseWithoutSigningIn}
             </HomeButton>
           </div>
         </div>
@@ -130,28 +115,28 @@ export function HomeColdOpen() {
         ) : (
           <>
             <PosterRow
-              title="Popular movies"
-              eyebrow="This week"
+              title={t.home.rails.popularMovies}
+              eyebrow={t.home.rails.thisWeek}
               items={discover.popular_movies.map(toPosterItem)}
-              action={<SeeAll>All movies</SeeAll>}
+              action={<SeeAll>{t.home.rails.allMovies}</SeeAll>}
             />
             <PosterRow
-              title="Popular shows"
-              eyebrow="This week"
+              title={t.home.rails.popularShows}
+              eyebrow={t.home.rails.thisWeek}
               items={discover.popular_shows.map(toPosterItem)}
-              action={<SeeAll>All shows</SeeAll>}
+              action={<SeeAll>{t.home.rails.allShows}</SeeAll>}
             />
             <PosterRow
-              title="Top-rated movies"
-              eyebrow="All time"
+              title={t.home.rails.topRatedMovies}
+              eyebrow={t.home.rails.allTime}
               items={discover.top_rated_movies.map(toPosterItem)}
-              action={<SeeAll>All time</SeeAll>}
+              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
             />
             <PosterRow
-              title="Top-rated shows"
-              eyebrow="All time"
+              title={t.home.rails.topRatedShows}
+              eyebrow={t.home.rails.allTime}
               items={discover.top_rated_shows.map(toPosterItem)}
-              action={<SeeAll>All time</SeeAll>}
+              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
             />
           </>
         )}
@@ -159,14 +144,13 @@ export function HomeColdOpen() {
         <section className="mt-9 grid grid-cols-1 gap-6 border-t border-border px-5 py-9 md:mt-18 md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-12 md:py-14">
           <div className="flex max-w-[720px] flex-col gap-3">
             <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-marquee uppercase">
-              Ready
+              {t.home.coldOpen.ready}
             </span>
             <h2 className="font-display text-[36px] leading-[0.95] tracking-[-0.01em] text-foreground md:text-[56px]">
-              Sign in. Start your watchlist.
+              {t.home.coldOpen.ctaTitle}
             </h2>
             <span className="text-[14.5px] leading-relaxed text-muted-foreground">
-              Discord OAuth. No email, no password. We only request your ID,
-              username, and avatar.
+              {t.home.coldOpen.ctaSubtitle}
             </span>
           </div>
           <HomeButton
@@ -176,7 +160,7 @@ export function HomeColdOpen() {
             href={`${API_URL}/auth/login`}
             className="w-full md:w-auto"
           >
-            <LogIn /> Continue with Discord
+            <LogIn /> {t.home.coldOpen.continueWithDiscord}
           </HomeButton>
         </section>
       </div>

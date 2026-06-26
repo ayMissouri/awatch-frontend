@@ -12,6 +12,7 @@ import {
   SHADOW_LG,
   usePosterColumns,
 } from "@/components/auth/poster-wall-shared";
+import { t } from "@/i18n";
 
 const COLS = 6;
 const TILES_PER_COL = 8;
@@ -113,7 +114,7 @@ export function PosterWall() {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <Eyebrow>
-              <RecDot /> Sign in
+              <RecDot /> {t.common.signIn}
             </Eyebrow>
             <h1
               style={{
@@ -126,9 +127,11 @@ export function PosterWall() {
                 margin: 0,
               }}
             >
-              Your watchlist,
+              {t.auth.login.headingLine1}
               <br />
-              <span style={{ fontStyle: "italic" }}>properly kept.</span>
+              <span style={{ fontStyle: "italic" }}>
+                {t.auth.login.headingLine2}
+              </span>
             </h1>
             <p
               style={{
@@ -139,8 +142,7 @@ export function PosterWall() {
                 margin: 0,
               }}
             >
-              Continue with Discord to access your library and pick up exactly
-              where you left off.
+              {t.auth.login.subheading}
             </p>
           </div>
 

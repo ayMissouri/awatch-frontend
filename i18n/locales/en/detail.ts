@@ -1,0 +1,95 @@
+// Movie and series detail pages.
+export const detail = {
+  notFound: {
+    movieTitle: "Movie not found",
+    seriesTitle: "Series not found",
+    description: "We couldn’t load this title. It may not exist in the catalog.",
+  },
+  eyebrow: {
+    featureFilm: "Feature film",
+    series: "Series",
+  },
+  sections: {
+    story: "The story",
+    cast: "Cast",
+    trailers: "Trailers",
+    trailersAndTeasers: "Trailers & teasers",
+    progressMap: "Your progress map",
+    catalog: "Catalog",
+    links: "Links",
+  },
+  status: {
+    inProgress: "In progress",
+    watching: "Watching",
+    watched: "Watched",
+    returning: "Returning",
+    ended: "Ended",
+  },
+  actions: {
+    resume: "Resume",
+    play: "Play",
+    rewatchFromStart: "Rewatch from start",
+    addToWatchlist: "Add to watchlist",
+    inYourWatchlist: "In your watchlist",
+    removeFromWatchlist: "Remove from watchlist",
+    watched: "Watched",
+    markWatched: "Mark watched",
+    markUnwatched: "Mark unwatched",
+  },
+  topBar: {
+    goBack: "Go back",
+    more: "More",
+  },
+  labels: {
+    director: "Director",
+    creator: "Creator",
+    writers: "Writers",
+    genre: "Genre",
+    genres: "Genres",
+    runtime: "Runtime",
+    released: "Released",
+    firstAired: "First aired",
+    country: "Country",
+    status: "Status",
+    imdb: "IMDB",
+    tmdb: "TMDB",
+    tvdb: "TVDB",
+    awards: "Awards",
+    share: "Share",
+  },
+  meta: {
+    seasons: (n: number) => `${n} season${n === 1 ? "" : "s"}`,
+    episodes: (n: number) => `${n} episodes`,
+    avgRuntime: (runtime: string) => `${runtime} avg.`,
+    clips: (n: number) => `${n} clips`,
+    credited: (n: number) => `${n} credited`,
+    episodesWatchedOf: (watched: number, total: number) =>
+      `${watched} of ${total} episodes`,
+    countShort: (watched: number, total: number) => `${watched} of ${total}`,
+    pctDone: (pct: number) => `${pct}% done`,
+    pct: (pct: number) => `${pct}%`,
+    watchedOfRuntime: (watchedMin: number, runtime: string, pct: number) =>
+      `${watchedMin}m of ${runtime} · ${pct}%`,
+    watchedMinutes: (watchedMin: number, pct: number) =>
+      `${watchedMin}m · ${pct}%`,
+    minutesLeft: (leftMin: number) => `${leftMin}m left`,
+  },
+  legend: {
+    watched: "Watched",
+    upNext: "Up next",
+    unwatched: "Unwatched",
+    unseen: "Unseen",
+  },
+  episode: {
+    upNext: "Up next",
+    cast: "Cast",
+  },
+  season: {
+    label: (n: number) => `Season ${n}`,
+    labelPadded: (n: string) => `Season ${n}`,
+  },
+  playEpisode: {
+    label: (code: string, title: string) => `Play ${code} — ${title}`,
+    resumeMinutes: (watchedMin: number) => `Resume · ${watchedMin}m in`,
+  },
+};

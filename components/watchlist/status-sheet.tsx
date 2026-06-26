@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { Check, Trash2 } from "lucide-react";
+import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { STATUS_META, STATUS_ORDER } from "@/lib/watchlist-status";
 import type { WatchlistItem, WatchlistStatus } from "@/lib/api";
@@ -33,7 +34,7 @@ export function StatusSheet({
           {item && (
             <>
               <DialogPrimitive.Title className="sr-only">
-                Manage {item.title}
+                {t.watchlist.status.manage(item.title)}
               </DialogPrimitive.Title>
               <div className="mx-auto mb-3.5 h-1 w-10 rounded-full bg-white/15" />
 
@@ -54,13 +55,15 @@ export function StatusSheet({
                     {item.title}
                   </div>
                   <div className="mt-1 font-mono text-[10px] tracking-wide text-muted-foreground uppercase">
-                    {item.type === "tv" ? "Series" : "Film"}
+                    {item.type === "tv"
+                      ? t.watchlist.mediaType.series
+                      : t.watchlist.mediaType.film}
                   </div>
                 </div>
               </div>
 
               <div className="px-1 py-2.5 font-mono text-[9px] tracking-[0.14em] text-muted-foreground/70 uppercase">
-                Set status
+                {t.watchlist.status.setStatus}
               </div>
               <div className="flex flex-col">
                 {STATUS_ORDER.map((s) => {
@@ -96,7 +99,7 @@ export function StatusSheet({
                 onClick={() => onRemove(item.id)}
                 className="mt-3 flex w-full items-center justify-center gap-2 border border-[#e7000b]/30 bg-[#e7000b]/8 py-3.5 text-sm font-semibold text-[#e86a62] transition-colors hover:bg-[#e7000b]/15"
               >
-                <Trash2 size={15} /> Remove from watchlist
+                <Trash2 size={15} /> {t.watchlist.status.removeFromWatchlist}
               </button>
             </>
           )}

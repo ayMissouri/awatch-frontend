@@ -1,4 +1,5 @@
 import { ChevronDown, SlidersHorizontal, Trash2, X } from "lucide-react";
+import { t } from "@/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,17 +30,19 @@ export function BulkBar({
         <span className="bg-marquee px-2 py-1 font-mono text-xs leading-none font-medium text-neutral-950">
           {count}
         </span>
-        <span className="text-[13px] text-muted-foreground">selected</span>
+        <span className="text-[13px] text-muted-foreground">
+          {t.watchlist.bulk.selected}
+        </span>
       </div>
       <div className="h-6 w-px bg-border" />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <HomeButton variant="ghost" size="sm">
-            <SlidersHorizontal /> Set status <ChevronDown />
+            <SlidersHorizontal /> {t.watchlist.status.setStatus} <ChevronDown />
           </HomeButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" side="top" className="w-52">
-          <DropdownMenuLabel>Move selection to</DropdownMenuLabel>
+          <DropdownMenuLabel>{t.watchlist.status.moveSelectionTo}</DropdownMenuLabel>
           {STATUS_ORDER.map((s) => {
             const meta = STATUS_META[s];
             return (
@@ -59,7 +62,7 @@ export function BulkBar({
         onClick={onRemove}
         className="text-[#e86a62]"
       >
-        <Trash2 /> Remove
+        <Trash2 /> {t.watchlist.bulk.remove}
       </HomeButton>
       <div className="h-6 w-px bg-border" />
       <HomeIconButton variant="ghost" size={32} onClick={onClear}>

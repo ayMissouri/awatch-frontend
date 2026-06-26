@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Ellipsis, Film, Tv } from "lucide-react";
+import { t } from "@/i18n";
 import { WatchlistCheckbox } from "@/components/watchlist/checkbox";
 import { StatusMenu } from "@/components/watchlist/status-menu";
 import { StatusPill } from "@/components/watchlist/status-pill";
@@ -40,7 +41,7 @@ export function WatchlistRow({
     >
       <button
         type="button"
-        aria-label={`Manage ${item.title}`}
+        aria-label={t.watchlist.status.manage(item.title)}
         onClick={() =>
           selectMode ? onToggleSelect(item.id) : onOpenSheet?.(item)
         }
@@ -80,7 +81,9 @@ export function WatchlistRow({
           {item.title}
         </Link>
         <div className="mt-0.5 font-mono text-[10px] tracking-wide text-muted-foreground uppercase">
-          {item.type === "tv" ? "Series" : "Film"}
+          {item.type === "tv"
+            ? t.watchlist.mediaType.series
+            : t.watchlist.mediaType.film}
         </div>
         <div className="mt-1.5 flex items-center gap-2 md:hidden">
           <div className="h-0.5 flex-1 bg-white/12">
@@ -97,7 +100,7 @@ export function WatchlistRow({
 
       <div className="hidden w-16 shrink-0 items-center gap-1.5 font-mono text-[10px] tracking-wide text-muted-foreground uppercase md:flex">
         {item.type === "tv" ? <Tv size={13} /> : <Film size={13} />}
-        {item.type === "tv" ? "TV" : "Movie"}
+        {item.type === "tv" ? t.watchlist.mediaType.tv : t.watchlist.mediaType.movie}
       </div>
 
       <div className="hidden w-36 shrink-0 flex-col gap-1.5 lg:flex">

@@ -26,6 +26,7 @@ import {
   sameDay,
   startOfDay,
 } from "./calendar-data";
+import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 function MiniMonthGrid({
@@ -151,12 +152,12 @@ function DayDetail({
           {date.getFullYear()}
         </span>
         <span className="ml-auto font-mono text-[10px] text-muted-foreground/70">
-          {releases.length} release{releases.length === 1 ? "" : "s"}
+          {t.calendar.releaseCount(releases.length)}
         </span>
       </div>
       {releases.length === 0 ? (
         <div className="py-7 text-center text-[13px] text-muted-foreground/70">
-          Nothing lands on this day.
+          {t.calendar.day.nothing}
         </div>
       ) : (
         <div>
@@ -222,7 +223,7 @@ function MobileAgenda({
               </span>
               {isToday && (
                 <span className="font-mono text-[9px] tracking-[0.14em] text-marquee uppercase">
-                  Today
+                  {t.calendar.agenda.today}
                 </span>
               )}
               <span className="ml-1 h-px flex-1 bg-border" />
@@ -291,22 +292,22 @@ export function CalendarMobile({
       {/* Hero */}
       <div className="pt-[18px] pb-3">
         <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-marquee uppercase">
-          Coming up
+          {t.calendar.hero.eyebrow}
         </span>
         <h1 className="mt-2 mb-2.5 font-display text-[42px] leading-none text-foreground">
-          Calendar
+          {t.calendar.hero.titleMobile}
         </h1>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.04em] text-muted-foreground">
-            <span>{m.upcomingCount} upcoming</span>
+            <span>{t.calendar.hero.upcomingCount(m.upcomingCount)}</span>
             <span className="h-[11px] w-px bg-[var(--border-strong)]" />
-            <span>from your watchlist</span>
+            <span>{t.calendar.hero.fromWatchlist}</span>
           </div>
           <button
             type="button"
             onClick={onRefresh}
             disabled={refreshing}
-            title="Sync from watchlist"
+            title={t.calendar.toolbar.sync}
             className="inline-flex size-[34px] shrink-0 items-center justify-center border border-border bg-card text-muted-foreground transition-colors enabled:hover:text-foreground disabled:opacity-50"
           >
             <RefreshCw size={14} className={cn(refreshing && "animate-spin")} />
@@ -322,7 +323,7 @@ export function CalendarMobile({
               type="button"
               onClick={() => m.setMonthIdx(Math.max(0, m.monthIdx - 1))}
               disabled={m.monthIdx === 0}
-              title="Previous month"
+              title={t.calendar.toolbar.prevMonth}
               className="inline-flex size-[34px] items-center justify-center border-r border-border transition-colors enabled:hover:bg-white/[0.04] disabled:opacity-35"
             >
               <ChevronLeft size={15} className="text-muted-foreground" />
@@ -333,7 +334,7 @@ export function CalendarMobile({
                 m.setMonthIdx(Math.min(m.months.length - 1, m.monthIdx + 1))
               }
               disabled={m.monthIdx === m.months.length - 1}
-              title="Next month"
+              title={t.calendar.toolbar.nextMonth}
               className="inline-flex size-[34px] items-center justify-center transition-colors enabled:hover:bg-white/[0.04] disabled:opacity-35"
             >
               <ChevronRight size={15} className="text-muted-foreground" />
@@ -349,8 +350,16 @@ export function CalendarMobile({
             value={m.view}
             onChange={m.setView}
             items={[
-              { id: "month", icon: <Grid2x2 size={14} />, title: "Month grid" },
-              { id: "agenda", icon: <List size={14} />, title: "Agenda" },
+              {
+                id: "month",
+                icon: <Grid2x2 size={14} />,
+                title: t.calendar.views.month,
+              },
+              {
+                id: "agenda",
+                icon: <List size={14} />,
+                title: t.calendar.views.agenda,
+              },
             ]}
           />
         </div>
@@ -358,9 +367,17 @@ export function CalendarMobile({
           value={m.typeFilter}
           onChange={m.setTypeFilter}
           items={[
-            { id: "all", label: "All" },
-            { id: "tv", label: "Episodes", icon: <Tv size={14} /> },
-            { id: "movie", label: "Movies", icon: <Film size={14} /> },
+            { id: "all", label: t.calendar.filters.all },
+            {
+              id: "tv",
+              label: t.calendar.filters.episodes,
+              icon: <Tv size={14} />,
+            },
+            {
+              id: "movie",
+              label: t.calendar.filters.movies,
+              icon: <Film size={14} />,
+            },
           ]}
         />
       </div>
@@ -373,8 +390,8 @@ export function CalendarMobile({
           m.monthCount === 0 ? (
             <CalendarEmpty
               icon={CalendarIcon}
-              title="Nothing this month"
-              hint="No releases from your watchlist land in this month. Try another month or the agenda."
+              title={t.calendar.empty.nothingThisMonthTitle}
+              hint={t.calendar.empty.nothingThisMonthHintMobile}
             />
           ) : (
             <div className="flex flex-col gap-5">
@@ -397,8 +414,8 @@ export function CalendarMobile({
         ) : m.agenda.length === 0 ? (
           <CalendarEmpty
             icon={CalendarIcon}
-            title="Nothing upcoming"
-            hint="Nothing from your watchlist has an announced date yet. Hit sync to check for newly scheduled releases."
+            title={t.calendar.empty.nothingUpcomingTitle}
+            hint={t.calendar.empty.nothingUpcomingHint}
           />
         ) : (
           <MobileAgenda

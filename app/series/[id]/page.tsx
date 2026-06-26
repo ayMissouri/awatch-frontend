@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useSeriesMeta, useWatchlistItem } from "@/hooks/use-meta";
 import { useAuthStore } from "@/lib/store";
 import { watchlistId } from "@/lib/utils";
+import { t } from "@/i18n";
 
 function DetailShell({
   user,
@@ -55,10 +56,10 @@ export default function SeriesPage() {
       <DetailShell user={user}>
         <Tv size={28} className="text-muted-foreground/60" />
         <div className="font-display text-2xl text-foreground">
-          Series not found
+          {t.detail.notFound.seriesTitle}
         </div>
         <p className="max-w-sm text-sm text-muted-foreground">
-          We couldn&apos;t load this title. It may not exist in the catalog.
+          {t.detail.notFound.description}
         </p>
       </DetailShell>
     );

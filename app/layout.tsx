@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { t } from "@/i18n";
 import "@/app/globals.css";
 
 const geistSans = Geist({ variable: "--font-sans", subsets: ["latin"] });
@@ -13,8 +14,8 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Watchlist",
-  description: "Track movies and TV shows",
+  title: t.meta.app.title,
+  description: t.meta.app.description,
 };
 
 export default function RootLayout({

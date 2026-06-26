@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { ChevronRight, Film, Moon, Star, Sun, Tv } from "lucide-react";
 import { cn, imageUrl } from "@/lib/utils";
 import type { DiscoverItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 export type SearchScope = "movie" | "tv";
 
@@ -36,8 +38,8 @@ export function ScopeToggle({
   size?: "sm" | "lg";
 }) {
   const options: { value: SearchScope; label: string; icon: typeof Film }[] = [
-    { value: "movie", label: "Movies", icon: Film },
-    { value: "tv", label: "Shows", icon: Tv },
+    { value: "movie", label: t.home.scope.movies, icon: Film },
+    { value: "tv", label: t.home.scope.shows, icon: Tv },
   ];
   return (
     <div className="flex w-full border border-border bg-background">
@@ -80,7 +82,7 @@ export function SearchResultRow({
   onMouseEnter?: () => void;
 }) {
   const poster = imageUrl(item.poster, "w185");
-  const typeLabel = item.type === "movie" ? "Movie" : "Show";
+  const typeLabel = item.type === "movie" ? t.home.typeLabel.movie : t.home.typeLabel.show;
   return (
     <button
       type="button"
@@ -91,9 +93,15 @@ export function SearchResultRow({
         active ? "bg-white/[0.055]" : "hover:bg-white/[0.04]",
       )}
     >
-      <div className="h-[50px] w-[34px] shrink-0 overflow-hidden bg-neutral-900">
+      <div className="relative h-[50px] w-[34px] shrink-0 overflow-hidden bg-neutral-900">
         {poster && (
-          <img src={poster} alt="" className="h-full w-full object-cover" />
+          <Image
+            src={poster}
+            alt=""
+            fill
+            sizes="34px"
+            className="object-cover"
+          />
         )}
       </div>
       <div className="min-w-0">
@@ -122,13 +130,13 @@ export function AppearanceToggle() {
         disabled
         className="inline-flex flex-1 cursor-not-allowed items-center justify-center gap-1.5 py-2 text-[11.5px] font-medium text-muted-foreground/60"
       >
-        <Sun size={13} /> Light
+        <Sun size={13} /> {t.home.appearance.light}
       </button>
       <button
         type="button"
         className="inline-flex flex-1 items-center justify-center gap-1.5 border-l border-border bg-neutral-50 py-2 text-[11.5px] font-medium text-neutral-950"
       >
-        <Moon size={13} /> Dark
+        <Moon size={13} /> {t.home.appearance.dark}
       </button>
     </div>
   );

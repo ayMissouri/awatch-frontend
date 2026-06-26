@@ -20,6 +20,7 @@ import {
   NavMenuSeparator,
 } from "@/components/home/nav-menu";
 import { useAuthStore } from "@/lib/store";
+import { t } from "@/i18n";
 
 interface AccountUser {
   username: string;
@@ -73,10 +74,14 @@ export function AccountMenu({
           <NavMenuSeparator />
 
           {/* Profile/Settings are placeholders until I create them. */}
-          <NavMenuItem icon={User} label="Your profile" href="/watchlist" />
+          <NavMenuItem
+            icon={User}
+            label={t.home.account.yourProfile}
+            href="/watchlist"
+          />
           <NavMenuItem
             icon={Bookmark}
-            label="Watchlist"
+            label={t.home.account.watchlist}
             href="/watchlist"
             trailing={
               watchlistCount != null ? (
@@ -86,22 +91,34 @@ export function AccountMenu({
               ) : undefined
             }
           />
-          <NavMenuItem icon={Calendar} label="Calendar" href="/calendar" />
-          <NavMenuItem icon={Clock} label="Continue watching" href="/" />
+          <NavMenuItem
+            icon={Calendar}
+            label={t.home.account.calendar}
+            href="/calendar"
+          />
+          <NavMenuItem
+            icon={Clock}
+            label={t.home.account.continueWatching}
+            href="/"
+          />
 
           <NavMenuSeparator />
 
-          <NavMenuLabel>Appearance</NavMenuLabel>
+          <NavMenuLabel>{t.home.account.appearance}</NavMenuLabel>
           <div className="px-2.5 pb-2">
             <AppearanceToggle />
           </div>
-          <NavMenuItem icon={Settings} label="Settings" shortcut="⌘," />
+          <NavMenuItem
+            icon={Settings}
+            label={t.home.account.settings}
+            shortcut="⌘,"
+          />
 
           <NavMenuSeparator />
 
           <NavMenuItem
             icon={LogOut}
-            label="Sign out"
+            label={t.common.signOut}
             danger
             onSelect={signOut}
           />

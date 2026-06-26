@@ -6,6 +6,7 @@ import { HomeButton } from "@/components/home/home-button";
 import { nextEpisode } from "@/lib/watchlist-status";
 import { detailHref, imageUrl } from "@/lib/utils";
 import type { WatchlistItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -84,8 +85,8 @@ export function ContinueWatchingCard({ item }: { item: WatchlistItem }) {
     ? Math.max(0, total - watched)
     : Math.round((item.progress.duration - item.progress.watched) / 60);
   const remainingLabel = isTv
-    ? `${remaining} episode${remaining === 1 ? "" : "s"} left`
-    : `${remaining} min left`;
+    ? t.home.card.episodesLeft(remaining)
+    : t.home.card.minLeft(remaining);
 
   const subtitle =
     isTv && item.last_season_watched != null ? (
@@ -96,7 +97,7 @@ export function ContinueWatchingCard({ item }: { item: WatchlistItem }) {
     ) : null;
 
   return (
-    <CardFrame item={item} eyebrow="Continue watching" subtitle={subtitle}>
+    <CardFrame item={item} eyebrow={t.home.card.continueWatching} subtitle={subtitle}>
       <ProgressBar watched={watched} duration={total} />
       <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-[9px] tracking-wide text-muted-foreground uppercase">
@@ -110,7 +111,7 @@ export function ContinueWatchingCard({ item }: { item: WatchlistItem }) {
             e.stopPropagation();
           }}
         >
-          <Play /> Resume
+          <Play /> {t.home.card.resume}
         </HomeButton>
       </div>
     </CardFrame>
@@ -131,13 +132,13 @@ export function UpNextCard({ item }: { item: WatchlistItem }) {
   return (
     <CardFrame
       item={item}
-      eyebrow="Up next"
+      eyebrow={t.home.card.upNext}
       eyebrowClassName="text-muted-foreground"
       subtitle={subtitle}
     >
       <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-[9px] tracking-wide text-muted-foreground uppercase">
-          {started ? "Next episode" : "Not started"}
+          {started ? t.home.card.nextEpisode : t.home.card.notStarted}
         </span>
         <HomeButton
           variant="secondary"
@@ -147,7 +148,7 @@ export function UpNextCard({ item }: { item: WatchlistItem }) {
             e.stopPropagation();
           }}
         >
-          <Play /> Play
+          <Play /> {t.home.card.play}
         </HomeButton>
       </div>
     </CardFrame>

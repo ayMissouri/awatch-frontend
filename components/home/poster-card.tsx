@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Star, Plus } from "lucide-react";
 import { HomeButton } from "@/components/home/home-button";
 import { cn, detailHref } from "@/lib/utils";
+import { t } from "@/i18n";
 
 export interface HomePosterItem {
   id: string;
@@ -17,7 +18,7 @@ export interface HomePosterItem {
 }
 
 function typeLabel(type: string) {
-  return type === "movie" ? "Movie" : "Show";
+  return type === "movie" ? t.home.typeLabel.movie : t.home.typeLabel.show;
 }
 
 export function PosterCard({
@@ -94,7 +95,7 @@ export function PosterCard({
               e.stopPropagation();
             }}
           >
-            <Plus /> Add
+            <Plus /> {t.home.card.add}
           </HomeButton>
         </div>
       </div>

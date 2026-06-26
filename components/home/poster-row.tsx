@@ -4,8 +4,13 @@ import { useRef, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { HomeIconButton } from "@/components/home/home-button";
 import { PosterCard, type HomePosterItem } from "@/components/home/poster-card";
+import { t } from "@/i18n";
 
-export function SeeAll({ children = "See all" }: { children?: ReactNode }) {
+export function SeeAll({
+  children = t.home.rails.seeAll,
+}: {
+  children?: ReactNode;
+}) {
   return (
     <a className="inline-flex cursor-pointer items-center gap-1 px-2 text-xs font-medium text-muted-foreground">
       {children} <ChevronRight size={12} />

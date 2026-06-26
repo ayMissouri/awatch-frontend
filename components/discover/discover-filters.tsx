@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { t } from "@/i18n";
 import {
   DISCOVER_MODES,
   type DiscoverMode,
@@ -90,7 +91,11 @@ function ArrowButton({
     <button
       type="button"
       onClick={onClick}
-      aria-label={dir === "left" ? "Scroll left" : "Scroll right"}
+      aria-label={
+        dir === "left"
+          ? t.discover.filters.scrollLeft
+          : t.discover.filters.scrollRight
+      }
       className="inline-flex size-[34px] shrink-0 items-center justify-center border border-border bg-card text-muted-foreground transition-colors hover:border-white/25 hover:text-foreground"
     >
       <Icon size={15} />
@@ -190,7 +195,7 @@ export function YearInput({
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         inputMode="numeric"
-        placeholder="Any year — e.g. 2024"
+        placeholder={t.discover.filters.yearPlaceholder}
         className="h-full min-w-0 flex-1 bg-transparent text-[12.5px] font-medium text-foreground outline-none placeholder:text-muted-foreground/70"
       />
       {has && (
@@ -200,7 +205,7 @@ export function YearInput({
             setText("");
             onPick(null);
           }}
-          aria-label="Clear year"
+          aria-label={t.discover.filters.clearYear}
           className="inline-flex shrink-0 text-muted-foreground/70 transition-colors hover:text-foreground"
         >
           <X size={13} />

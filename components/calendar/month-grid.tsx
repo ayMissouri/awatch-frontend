@@ -1,6 +1,7 @@
 "use client";
 
 import { Popover as PopoverPrimitive } from "radix-ui";
+import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { ReleaseChip, ReleaseRow } from "./release-items";
 import {
@@ -70,7 +71,7 @@ function DayCell({
               isPast && "opacity-50",
             )}
           >
-            +{extra} more
+            {t.calendar.day.more(extra)}
           </span>
         )}
       </div>
@@ -103,7 +104,7 @@ function DayCell({
               {date.getFullYear()}
             </span>
             <span className="ml-auto font-mono text-[10px] text-muted-foreground/70">
-              {releases.length} release{releases.length === 1 ? "" : "s"}
+              {t.calendar.releaseCount(releases.length)}
             </span>
           </div>
           <div className="max-h-80 overflow-y-auto p-1.5">

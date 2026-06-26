@@ -4,15 +4,26 @@ import Link from "next/link";
 import { Film, Bookmark, Search, User } from "lucide-react";
 import { useNavUI } from "@/lib/ui-store";
 import { cn } from "@/lib/utils";
+import { t } from "@/i18n";
 
 export function MobileBottomNav({ active = "home" }: { active?: string }) {
   const setDrawerOpen = useNavUI((s) => s.setDrawerOpen);
 
   const TABS = [
-    { id: "home", icon: Film, label: "Home", href: "/" },
-    { id: "watchlist", icon: Bookmark, label: "Watchlist", href: "/watchlist" },
-    { id: "discover", icon: Search, label: "Discover", href: "/discover" },
-    { id: "you", icon: User, label: "You", onClick: () => setDrawerOpen(true) },
+    { id: "home", icon: Film, label: t.home.nav.home, href: "/" },
+    {
+      id: "watchlist",
+      icon: Bookmark,
+      label: t.home.nav.watchlist,
+      href: "/watchlist",
+    },
+    { id: "discover", icon: Search, label: t.home.nav.discover, href: "/discover" },
+    {
+      id: "you",
+      icon: User,
+      label: t.home.nav.you,
+      onClick: () => setDrawerOpen(true),
+    },
   ];
 
   return (

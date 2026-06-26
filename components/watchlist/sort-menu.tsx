@@ -1,4 +1,5 @@
 import { ArrowUpDown, ChevronDown } from "lucide-react";
+import { t } from "@/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +10,9 @@ import {
 export type SortOption = "updated" | "title" | "progress";
 
 const SORTS: { id: SortOption; label: string }[] = [
-  { id: "updated", label: "Recently updated" },
-  { id: "title", label: "Title (A–Z)" },
-  { id: "progress", label: "Progress" },
+  { id: "updated", label: t.watchlist.sort.updated },
+  { id: "title", label: t.watchlist.sort.title },
+  { id: "progress", label: t.watchlist.sort.progress },
 ];
 
 export function SortMenu({
@@ -31,7 +32,7 @@ export function SortMenu({
         >
           <ArrowUpDown size={13} className="text-muted-foreground" />
           <span className="hidden text-muted-foreground/70 sm:inline">
-            Sort:
+            {t.watchlist.sort.label}
           </span>
           <span className="hidden text-foreground sm:inline">
             {current.label}

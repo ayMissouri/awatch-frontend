@@ -14,6 +14,7 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useNavUI } from "@/lib/ui-store";
 import { addRecentSearch, getRecentSearches } from "@/lib/recent-searches";
 import { detailHref } from "@/lib/utils";
+import { t } from "@/i18n";
 
 const MAX_RESULTS = 8;
 
@@ -99,7 +100,7 @@ export function CommandPalette() {
           className="fixed top-[14vh] left-1/2 z-200 w-[600px] max-w-[calc(100vw-2rem)] -translate-x-1/2 border border-[var(--border-strong)] bg-popover shadow-[0_24px_64px_-12px_rgba(0,0,0,0.8)] outline-none duration-150 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95"
         >
           <DialogPrimitive.Title className="sr-only">
-            Search movies and shows
+            {t.home.search.title}
           </DialogPrimitive.Title>
 
           {/* Input */}
@@ -116,7 +117,7 @@ export function CommandPalette() {
               ref={inputRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search movies and shows…"
+              placeholder={t.home.search.placeholder}
               className="flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
             />
             <Kbd>ESC</Kbd>
@@ -125,7 +126,7 @@ export function CommandPalette() {
           {/* Scope */}
           <div className="flex items-center gap-3 border-b border-border px-3.5 py-2.5">
             <span className="font-mono text-[9px] tracking-[0.14em] whitespace-nowrap text-muted-foreground/80 uppercase">
-              Search in
+              {t.home.search.searchIn}
             </span>
             <div className="max-w-70 flex-1">
               <ScopeToggle scope={scope} onChange={setScope} />
@@ -138,7 +139,7 @@ export function CommandPalette() {
               recent.length > 0 ? (
                 <>
                   <div className="px-2.5 pt-2 pb-1.5 font-mono text-[9px] tracking-[0.14em] text-muted-foreground/80 uppercase">
-                    Recent
+                    {t.home.search.recent}
                   </div>
                   {recent.map((term) => (
                     <button
@@ -163,21 +164,25 @@ export function CommandPalette() {
                 </>
               ) : (
                 <div className="px-3 py-10 text-center text-[13px] text-muted-foreground">
-                  Search the catalog for movies and shows.
+                  {t.home.search.empty}
                 </div>
               )
             ) : results.length === 0 && !isFetching ? (
               <div className="px-3 py-10 text-center text-[13px] text-muted-foreground">
-                No {scope === "movie" ? "movies" : "shows"} match “
-                {debounced.trim()}”.
+                {t.home.search.noMatch(
+                  scope === "movie"
+                    ? t.home.search.moviesLower
+                    : t.home.search.showsLower,
+                  debounced.trim(),
+                )}
               </div>
             ) : (
               <>
                 <div className="flex items-center justify-between px-2.5 pt-2 pb-1.5 font-mono text-[9px] tracking-[0.14em] text-muted-foreground/80 uppercase">
-                  <span>{scope === "movie" ? "Movies" : "Shows"}</span>
                   <span>
-                    {results.length} result{results.length === 1 ? "" : "s"}
+                    {scope === "movie" ? t.home.search.movies : t.home.search.shows}
                   </span>
+                  <span>{t.home.search.resultCount(results.length)}</span>
                 </div>
                 {results.map((item, i) => (
                   <SearchResultRow
@@ -196,13 +201,13 @@ export function CommandPalette() {
           <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 text-[11px] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <Kbd>↑</Kbd>
-              <Kbd>↓</Kbd> Navigate
+              <Kbd>↓</Kbd> {t.home.search.kbd.navigate}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Kbd>↵</Kbd> Open
+              <Kbd>↵</Kbd> {t.home.search.kbd.open}
             </span>
             <span className="ml-auto inline-flex items-center gap-1.5">
-              <Kbd>⌘K</Kbd> Toggle
+              <Kbd>⌘K</Kbd> {t.home.search.kbd.toggle}
             </span>
           </div>
         </DialogPrimitive.Content>

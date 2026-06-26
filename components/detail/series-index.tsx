@@ -33,6 +33,7 @@ import {
 import { buildWatchlistItem } from "@/lib/utils";
 import { showStatusFromEpisodes } from "@/lib/watchlist-status";
 import type { SeriesDetail, WatchlistItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 type Boundary = { season: number; episode: number } | null;
 
@@ -50,6 +51,8 @@ function statusKindOf(status?: string): "returning" | "ended" | "planned" {
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
+const nowMs = () => Date.now();
+
 export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
   const genres = s.genre ?? s.genres ?? [];
   const inWatchlist = !!item;
@@ -59,10 +62,12 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
   const [localBoundary, setLocalBoundary] = React.useState<
     Boundary | undefined
   >(undefined);
-  React.useEffect(
-    () => setLocalBoundary(undefined),
-    [itemLastSeason, itemLastEpisode],
-  );
+  const boundaryKey = `${itemLastSeason}:${itemLastEpisode}`;
+  const [prevBoundaryKey, setPrevBoundaryKey] = React.useState(boundaryKey);
+  if (boundaryKey !== prevBoundaryKey) {
+    setPrevBoundaryKey(boundaryKey);
+    setLocalBoundary(undefined);
+  }
   const boundary: Boundary =
     localBoundary !== undefined
       ? localBoundary
@@ -117,7 +122,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
     const status = showStatusFromEpisodes(episodesWatched, episodesTotal);
     const lastSeasonWatched = nextBoundary ? nextBoundary.season : minSeason;
     const lastEpisodeWatched = nextBoundary ? nextBoundary.episode : 0;
-    const lastUpdated = Date.now();
+    const lastUpdated = nowMs();
 
     if (item) {
       updateProgress.mutate(
@@ -154,9 +159,9 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
   const statusKind = statusKindOf(s.status);
   const statusShort =
     statusKind === "returning"
-      ? "Returning"
+      ? t.detail.status.returning
       : statusKind === "ended"
-        ? "Ended"
+        ? t.detail.status.ended
         : s.status;
 
   return (
@@ -250,7 +255,8 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                 }}
               >
                 <Eyebrow color="var(--marquee-500)">
-                  Series{s.releaseInfo ? ` · ${s.releaseInfo}` : ""}
+                  {t.detail.eyebrow.series}
+                  {s.releaseInfo ? ` · ${s.releaseInfo}` : ""}
                 </Eyebrow>
                 {statusShort && (
                   <StatusPill kind={statusKind}>{statusShort}</StatusPill>
@@ -258,9 +264,13 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                 {inWatchlist &&
                   watchedEps > 0 &&
                   (watchedEps >= totalEps && totalEps > 0 ? (
-                    <StatusPill kind="watched">Watched</StatusPill>
+                    <StatusPill kind="watched">
+                      {t.detail.status.watched}
+                    </StatusPill>
                   ) : (
-                    <StatusPill kind="watching">Watching</StatusPill>
+                    <StatusPill kind="watching">
+                      {t.detail.status.watching}
+                    </StatusPill>
                   ))}
               </div>
 
@@ -285,11 +295,9 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                   s.imdbRating ? (
                     <StarRating key="r" value={s.imdbRating} size={13} />
                   ) : null,
-                  seasons.length
-                    ? `${seasons.length} season${seasons.length === 1 ? "" : "s"}`
-                    : null,
-                  totalEps ? `${totalEps} episodes` : null,
-                  s.runtime ? `${s.runtime} avg.` : null,
+                  seasons.length ? t.detail.meta.seasons(seasons.length) : null,
+                  totalEps ? t.detail.meta.episodes(totalEps) : null,
+                  s.runtime ? t.detail.meta.avgRuntime(s.runtime) : null,
                   s.country,
                 ]}
               />
@@ -320,8 +328,11 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
               >
                 {next && (
                   <HomeButton variant="primary" size="lg">
-                    <Play /> Play S{pad2(next.season)}E{pad2(next.episode)} —{" "}
-                    {next.title}
+                    <Play />{" "}
+                    {t.detail.playEpisode.label(
+                      `S${pad2(next.season)}E${pad2(next.episode)}`,
+                      next.title,
+                    )}
                   </HomeButton>
                 )}
                 {inWatchlist ? (
@@ -331,7 +342,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                     onClick={toggleWatchlist}
                     disabled={watchlistBusy}
                   >
-                    <BookmarkCheck /> In your watchlist
+                    <BookmarkCheck /> {t.detail.actions.inYourWatchlist}
                   </HomeButton>
                 ) : (
                   <HomeButton
@@ -340,7 +351,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                     onClick={toggleWatchlist}
                     disabled={watchlistBusy}
                   >
-                    <Bookmark /> Add to watchlist
+                    <Bookmark /> {t.detail.actions.addToWatchlist}
                   </HomeButton>
                 )}
                 <HomeIconButton variant="outlineLight" size={44}>
@@ -367,7 +378,9 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
             }}
           >
             <div>
-              <Eyebrow color="var(--fg-subtle)">Your progress map</Eyebrow>
+              <Eyebrow color="var(--fg-subtle)">
+                {t.detail.sections.progressMap}
+              </Eyebrow>
               <h2
                 style={{
                   fontFamily: "var(--font-display)",
@@ -377,7 +390,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                   margin: "8px 0 0",
                 }}
               >
-                {watchedEps} of {totalEps} episodes
+                {t.detail.meta.episodesWatchedOf(watchedEps, totalEps)}
                 <span
                   style={{
                     fontFamily: "var(--font-mono)",
@@ -388,7 +401,9 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                     verticalAlign: "middle",
                   }}
                 >
-                  {totalEps ? Math.round((watchedEps / totalEps) * 100) : 0}%
+                  {t.detail.meta.pct(
+                    totalEps ? Math.round((watchedEps / totalEps) * 100) : 0,
+                  )}
                 </span>
               </h2>
             </div>
@@ -400,16 +415,19 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                 flexWrap: "wrap",
               }}
             >
-              <Legend swatch="var(--marquee-500)" label="Watched" />
+              <Legend
+                swatch="var(--marquee-500)"
+                label={t.detail.legend.watched}
+              />
               <Legend
                 swatch="rgba(228,79,47,0.25)"
                 border="var(--marquee-500)"
-                label="Up next"
+                label={t.detail.legend.upNext}
               />
               <Legend
                 swatch="transparent"
                 border="var(--border)"
-                label="Unwatched"
+                label={t.detail.legend.unwatched}
               />
             </div>
           </div>
@@ -461,7 +479,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                       }}
                     >
                       <Eyebrow color="var(--fg-subtle)">
-                        {season.total} episodes
+                        {t.detail.meta.episodes(season.total)}
                       </Eyebrow>
                       <span
                         style={{
@@ -472,7 +490,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                           color: "var(--fg-strong)",
                         }}
                       >
-                        Season {season.season}
+                        {t.detail.season.label(season.season)}
                       </span>
                     </div>
 
@@ -546,10 +564,13 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                           marginTop: 4,
                         }}
                       >
-                        {season.total
-                          ? Math.round((season.watched / season.total) * 100)
-                          : 0}
-                        % done
+                        {t.detail.meta.pctDone(
+                          season.total
+                            ? Math.round(
+                                (season.watched / season.total) * 100,
+                              )
+                            : 0,
+                        )}
                       </div>
                     </div>
 
@@ -601,48 +622,58 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
             <div />
           )}
           <aside>
-            <Eyebrow color="var(--fg-subtle)">Catalog</Eyebrow>
+            <Eyebrow color="var(--fg-subtle)">
+              {t.detail.sections.catalog}
+            </Eyebrow>
             <div style={{ marginTop: 14 }}>
               {s.director && s.director.length > 0 && (
-                <MetaRow label="Creator">{s.director.join(", ")}</MetaRow>
+                <MetaRow label={t.detail.labels.creator}>
+                  {s.director.join(", ")}
+                </MetaRow>
               )}
               {s.writer && s.writer.length > 0 && (
-                <MetaRow label="Writers">{s.writer.join(", ")}</MetaRow>
+                <MetaRow label={t.detail.labels.writers}>
+                  {s.writer.join(", ")}
+                </MetaRow>
               )}
               {genres.length > 0 && (
-                <MetaRow label="Genres">{genres.join(", ")}</MetaRow>
+                <MetaRow label={t.detail.labels.genres}>
+                  {genres.join(", ")}
+                </MetaRow>
               )}
-              {s.status && <MetaRow label="Status">{s.status}</MetaRow>}
+              {s.status && (
+                <MetaRow label={t.detail.labels.status}>{s.status}</MetaRow>
+              )}
               {s.released && (
-                <MetaRow label="First aired">
+                <MetaRow label={t.detail.labels.firstAired}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {s.released}
                   </span>
                 </MetaRow>
               )}
               {s.imdb_id && (
-                <MetaRow label="IMDB">
+                <MetaRow label={t.detail.labels.imdb}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {s.imdb_id}
                   </span>
                 </MetaRow>
               )}
               {s.moviedb_id != null && (
-                <MetaRow label="TMDB">
+                <MetaRow label={t.detail.labels.tmdb}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {s.moviedb_id}
                   </span>
                 </MetaRow>
               )}
               {s.tvdb_id != null && (
-                <MetaRow label="TVDB">
+                <MetaRow label={t.detail.labels.tvdb}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {s.tvdb_id}
                   </span>
                 </MetaRow>
               )}
               {s.awards && (
-                <MetaRow label="Awards">
+                <MetaRow label={t.detail.labels.awards}>
                   <span style={{ color: "var(--fg-muted)", fontSize: 12.5 }}>
                     {s.awards}
                   </span>

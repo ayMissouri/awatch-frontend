@@ -6,13 +6,14 @@ import { useSearchParams } from "next/navigation"
 import { ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { originCrumbs, type Crumb } from "@/lib/breadcrumbs"
+import { t } from "@/i18n"
 
 const crumbBase = "font-mono text-[10px] tracking-[0.10em] uppercase transition-colors"
 
 
 export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: string }) {
   return (
-    <nav className={cn("flex flex-wrap items-center gap-2", className)} aria-label="Breadcrumb">
+    <nav className={cn("flex flex-wrap items-center gap-2", className)} aria-label={t.auth.breadcrumbs.label}>
       {items.map((it, i) => {
         const last = i === items.length - 1
         return (

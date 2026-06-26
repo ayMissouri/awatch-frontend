@@ -28,6 +28,7 @@ import {
   type DiscoverType,
 } from "@/components/discover/discover-data";
 import { useDiscoverCatalog } from "@/hooks/use-discover";
+import { t } from "@/i18n";
 import { fromQuery, type Crumb } from "@/lib/breadcrumbs";
 import { useAuthStore } from "@/lib/store";
 import type { DiscoverItem } from "@/lib/api";
@@ -44,15 +45,15 @@ function toPosterItem(item: DiscoverItem) {
 }
 
 const TYPE_ITEMS = [
-  { id: "all" as const, label: "All" },
-  { id: "movie" as const, label: "Movies", icon: <Film size={14} /> },
-  { id: "tv" as const, label: "Shows", icon: <Tv size={14} /> },
+  { id: "all" as const, label: t.discover.types.all },
+  { id: "movie" as const, label: t.discover.types.movies, icon: <Film size={14} /> },
+  { id: "tv" as const, label: t.discover.types.shows, icon: <Tv size={14} /> },
 ];
 
 function ResultCount({ n }: { n: number }) {
   return (
     <span className="font-mono text-[11px] tracking-[0.04em] text-muted-foreground">
-      <span className="text-foreground">{n}</span> titles
+      <span className="text-foreground">{n}</span> {t.discover.titlesLabel(n)}
     </span>
   );
 }
@@ -150,7 +151,7 @@ function DiscoverContent() {
         : null);
   const crumbs: Crumb[] = [
     {
-      label: "Discover",
+      label: t.discover.title,
       onClick: () => {
         setMode("genre");
         setType("all");
@@ -161,7 +162,7 @@ function DiscoverContent() {
   ];
   if (type !== "all")
     crumbs.push({
-      label: type === "movie" ? "Movies" : "Shows",
+      label: type === "movie" ? t.discover.types.movies : t.discover.types.shows,
       onClick: clearSelection,
     });
   if (dimLabel) crumbs.push({ label: dimLabel });
@@ -191,14 +192,14 @@ function DiscoverContent() {
           })),
           value: provider,
           onSelect: setProvider,
-          allLabel: "All networks",
+          allLabel: t.discover.filters.allNetworks,
           withDot: true,
         }
       : {
           options: GENRES.map((g) => ({ id: g, label: g })),
           value: genre,
           onSelect: setGenre,
-          allLabel: "All genres",
+          allLabel: t.discover.filters.allGenres,
           withDot: false,
         };
 
@@ -214,15 +215,14 @@ function DiscoverContent() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-marquee uppercase">
-              Browse the catalogue
+              {t.discover.eyebrow}
             </span>
             <h1 className="mt-3.5 font-display text-[52px] leading-[0.96] tracking-[-0.01em] text-white md:text-[68px] md:leading-[0.98]">
-              Discover
+              {t.discover.title}
             </h1>
           </div>
           <p className="mb-1.5 hidden max-w-[350px] text-[14.5px] leading-relaxed text-pretty text-muted-foreground md:block">
-            Browse one lens at a time — by genre, by year, or by network. Pick a
-            lane and dig in.
+            {t.discover.intro}
           </p>
         </div>
 
@@ -235,7 +235,7 @@ function DiscoverContent() {
               {mode === "genre" && (
                 <>
                   <span className="hidden font-mono text-[9.5px] tracking-[0.12em] text-muted-foreground/80 uppercase md:inline">
-                    Show
+                    {t.discover.filters.show}
                   </span>
                   <Segmented
                     items={CURATIONS}
@@ -275,7 +275,7 @@ function DiscoverContent() {
               onClick={clearSelection}
               className="text-xs font-medium text-muted-foreground/80 underline underline-offset-[3px] transition-colors hover:text-foreground"
             >
-              Clear
+              {t.discover.clear}
             </button>
           )}
         </div>
@@ -286,23 +286,23 @@ function DiscoverContent() {
         ) : isError ? (
           <div className="flex flex-col items-center justify-center gap-3.5 px-6 py-20 text-center">
             <div className="font-display text-[28px] leading-none text-foreground">
-              Couldn&rsquo;t load titles
+              {t.discover.error.title}
             </div>
             <div className="max-w-85 text-[13.5px] leading-relaxed text-muted-foreground">
-              Something went wrong fetching this catalogue.
+              {t.discover.error.hint}
             </div>
             <button
               type="button"
               onClick={() => refetch()}
               className="mt-1 inline-flex h-9 items-center border border-border bg-card px-4 text-[13px] font-medium text-foreground transition-colors hover:border-white/25"
             >
-              Try again
+              {t.discover.error.retry}
             </button>
           </div>
         ) : results.length === 0 ? (
           <EmptyState
-            title="Nothing here yet"
-            hint="Try a different selection or switch the type back to All."
+            title={t.discover.empty.title}
+            hint={t.discover.empty.hint}
           />
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-[repeat(auto-fill,minmax(168px,1fr))] md:gap-5">

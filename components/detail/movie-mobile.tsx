@@ -29,6 +29,7 @@ import type { MovieDetail, WatchlistItem } from "@/lib/api";
 import { buildWatchlistItem } from "@/lib/utils";
 import { Bookmark, BookmarkCheck, Eye, EyeOff, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { t } from "@/i18n";
 
 interface MovieBackdropMobileProps {
   movie: MovieDetail;
@@ -148,10 +149,13 @@ export function MovieBackdropMobile({
             }}
           >
             <Eyebrow color="var(--marquee-500)">
-              Feature film{m.year ? ` · ${m.year}` : ""}
+              {t.detail.eyebrow.featureFilm}
+              {m.year ? ` · ${m.year}` : ""}
             </Eyebrow>
             {inWatchlist && hasProgress && (
-              <StatusPill kind="watching">In progress</StatusPill>
+              <StatusPill kind="watching">
+                {t.detail.status.inProgress}
+              </StatusPill>
             )}
           </div>
           <h1
@@ -216,10 +220,15 @@ export function MovieBackdropMobile({
                 }}
               >
                 <span>
-                  {watchedMin}m{m.runtime ? ` of ${m.runtime}` : ""} ·{" "}
-                  {Math.round(pct)}%
+                  {m.runtime
+                    ? t.detail.meta.watchedOfRuntime(
+                        watchedMin,
+                        m.runtime,
+                        Math.round(pct),
+                      )
+                    : t.detail.meta.watchedMinutes(watchedMin, Math.round(pct))}
                 </span>
-                <span>{leftMin}m left</span>
+                <span>{t.detail.meta.minutesLeft(leftMin)}</span>
               </div>
             </div>
           )}
@@ -249,21 +258,31 @@ export function MovieBackdropMobile({
         <MMetaList
           rows={[
             m.director?.length
-              ? { label: "Director", value: m.director.join(", ") }
+              ? { label: t.detail.labels.director, value: m.director.join(", ") }
               : null,
             m.writer?.length
-              ? { label: "Writers", value: m.writer.join(", ") }
+              ? { label: t.detail.labels.writers, value: m.writer.join(", ") }
               : null,
-            genres.length ? { label: "Genre", value: genres.join(", ") } : null,
+            genres.length
+              ? { label: t.detail.labels.genre, value: genres.join(", ") }
+              : null,
             m.runtime
-              ? { label: "Runtime", value: m.runtime, mono: true }
+              ? { label: t.detail.labels.runtime, value: m.runtime, mono: true }
               : null,
             m.released
-              ? { label: "Released", value: formatDate(m.released), mono: true }
+              ? {
+                  label: t.detail.labels.released,
+                  value: formatDate(m.released),
+                  mono: true,
+                }
               : null,
-            m.country ? { label: "Country", value: m.country } : null,
-            m.imdb_id ? { label: "IMDB", value: m.imdb_id, mono: true } : null,
-            m.awards ? { label: "Awards", value: m.awards } : null,
+            m.country
+              ? { label: t.detail.labels.country, value: m.country }
+              : null,
+            m.imdb_id
+              ? { label: t.detail.labels.imdb, value: m.imdb_id, mono: true }
+              : null,
+            m.awards ? { label: t.detail.labels.awards, value: m.awards } : null,
           ].filter((r): r is NonNullable<typeof r> => !!r)}
         />
       </section>
@@ -272,8 +291,8 @@ export function MovieBackdropMobile({
       {m.cast && m.cast.length > 0 && (
         <section style={{ marginTop: 32 }}>
           <MSectionHead
-            title="Cast"
-            right={`${m.cast.length} credited`}
+            title={t.detail.sections.cast}
+            right={t.detail.meta.credited(m.cast.length)}
             style={{ marginBottom: 14 }}
           />
           <MCastScroll cast={m.cast} />
@@ -284,8 +303,8 @@ export function MovieBackdropMobile({
       {trailers.length > 0 && (
         <section style={{ marginTop: 32 }}>
           <MSectionHead
-            title="Trailers"
-            right={`${trailers.length} clips`}
+            title={t.detail.sections.trailers}
+            right={t.detail.meta.clips(trailers.length)}
             style={{ marginBottom: 14 }}
           />
           <div
@@ -308,7 +327,10 @@ export function MovieBackdropMobile({
       {/* ACTION BAR */}
       <MActionBar>
         <HomeButton variant="primary" size="lg" style={{ flex: 1 }}>
-          <Play /> {hasProgress ? `Resume · ${watchedMin}m in` : "Play"}
+          <Play />{" "}
+          {hasProgress
+            ? t.detail.playEpisode.resumeMinutes(watchedMin)
+            : t.detail.actions.play}
         </HomeButton>
         <HomeIconButton
           size={44}
@@ -316,7 +338,9 @@ export function MovieBackdropMobile({
           onClick={toggleWatchlist}
           disabled={busy}
           aria-label={
-            inWatchlist ? "Remove from watchlist" : "Add to watchlist"
+            inWatchlist
+              ? t.detail.actions.removeFromWatchlist
+              : t.detail.actions.addToWatchlist
           }
         >
           {inWatchlist ? <BookmarkCheck /> : <Bookmark />}
@@ -326,7 +350,11 @@ export function MovieBackdropMobile({
           variant={isWatched ? "secondary" : "outline"}
           onClick={toggleWatched}
           disabled={busy}
-          aria-label={isWatched ? "Mark unwatched" : "Mark watched"}
+          aria-label={
+            isWatched
+              ? t.detail.actions.markUnwatched
+              : t.detail.actions.markWatched
+          }
         >
           {isWatched ? <Eye /> : <EyeOff />}
         </HomeIconButton>

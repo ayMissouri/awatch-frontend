@@ -1,4 +1,5 @@
 import { Ellipsis, Trash2 } from "lucide-react";
+import { t } from "@/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +37,7 @@ export function StatusMenu({
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align} className="w-52">
-        <DropdownMenuLabel>Set status</DropdownMenuLabel>
+        <DropdownMenuLabel>{t.watchlist.status.setStatus}</DropdownMenuLabel>
         {STATUS_ORDER.map((s) => {
           const meta = STATUS_META[s];
           const active = s === status;
@@ -45,14 +46,16 @@ export function StatusMenu({
               <span className={cn("size-2 shrink-0 rounded-full", meta.dot)} />
               <span className="flex-1">{meta.label}</span>
               {active && (
-                <span className="text-xs text-muted-foreground">Current</span>
+                <span className="text-xs text-muted-foreground">
+                  {t.watchlist.status.current}
+                </span>
               )}
             </DropdownMenuItem>
           );
         })}
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={onRemove}>
-          <Trash2 /> Remove from list
+          <Trash2 /> {t.watchlist.status.removeFromList}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

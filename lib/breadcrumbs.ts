@@ -1,10 +1,14 @@
 import type { ReadonlyURLSearchParams } from "next/navigation"
 import { NETWORK_LABEL } from "@/components/discover/discover-data"
+import { t } from "@/i18n"
 
 // href renders a link, onClick a button; a crumb with neither it renders as the current stage.
 export type Crumb = { label: string; href?: string; onClick?: () => void }
 
-const TYPE_LABEL: Record<string, string> = { movie: "Movies", tv: "Shows" }
+const TYPE_LABEL: Record<string, string> = {
+  movie: t.auth.breadcrumbs.movies,
+  tv: t.auth.breadcrumbs.shows,
+}
 
 // discover page breadcrumbs work based on the filters applied.
 export interface DiscoverContext {
@@ -16,7 +20,7 @@ export interface DiscoverContext {
 }
 
 export function discoverCrumbs(ctx: DiscoverContext): Crumb[] {
-  const crumbs: Crumb[] = [{ label: "Discover", href: "/discover" }]
+  const crumbs: Crumb[] = [{ label: t.auth.breadcrumbs.discover, href: "/discover" }]
   const type = ctx.type === "movie" || ctx.type === "tv" ? ctx.type : null
 
   if (type) {
@@ -64,12 +68,12 @@ export function originCrumbs(sp: URLSearchParams | ReadonlyURLSearchParams): Cru
         provider: sp.get("provider"),
       })
     case "watchlist":
-      return [{ label: "Watchlist", href: "/watchlist" }]
+      return [{ label: t.auth.breadcrumbs.watchlist, href: "/watchlist" }]
     case "calendar":
-      return [{ label: "Calendar", href: "/calendar" }]
+      return [{ label: t.auth.breadcrumbs.calendar, href: "/calendar" }]
     case "search":
-      return [{ label: "Search" }]
+      return [{ label: t.auth.breadcrumbs.search }]
     default:
-      return [{ label: "Home", href: "/" }]
+      return [{ label: t.auth.breadcrumbs.home, href: "/" }]
   }
 }

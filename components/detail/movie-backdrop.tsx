@@ -30,6 +30,7 @@ import {
   TrailerTile,
 } from "@/components/detail/shared";
 import type { MovieDetail, WatchlistItem } from "@/lib/api";
+import { t } from "@/i18n";
 
 interface MovieBackdropProps {
   movie: MovieDetail;
@@ -50,9 +51,9 @@ function formatDate(value?: string) {
 }
 
 const LINK_LABELS: Record<string, string> = {
-  imdb: "IMDB",
-  tmdb: "TMDB",
-  share: "Share",
+  imdb: t.detail.labels.imdb,
+  tmdb: t.detail.labels.tmdb,
+  share: t.detail.labels.share,
 };
 
 const CONTENT_MAX = 1180;
@@ -184,10 +185,13 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <Eyebrow color="var(--marquee-500)">
-                  Feature film{m.year ? ` · ${m.year}` : ""}
+                  {t.detail.eyebrow.featureFilm}
+                  {m.year ? ` · ${m.year}` : ""}
                 </Eyebrow>
                 {inWatchlist && hasProgress && (
-                  <StatusPill kind="watching">In progress</StatusPill>
+                  <StatusPill kind="watching">
+                    {t.detail.status.inProgress}
+                  </StatusPill>
                 )}
               </div>
               <h1
@@ -271,10 +275,18 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                     }}
                   >
                     <span>
-                      {watchedMin}m{m.runtime ? ` of ${m.runtime}` : ""} ·{" "}
-                      {Math.round(pct)}%
+                      {m.runtime
+                        ? t.detail.meta.watchedOfRuntime(
+                            watchedMin,
+                            m.runtime,
+                            Math.round(pct),
+                          )
+                        : t.detail.meta.watchedMinutes(
+                            watchedMin,
+                            Math.round(pct),
+                          )}
                     </span>
-                    <span>{leftMin}m left</span>
+                    <span>{t.detail.meta.minutesLeft(leftMin)}</span>
                   </div>
                 </div>
               )}
@@ -290,7 +302,7 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
               >
                 {hasProgress && (
                   <HomeButton variant="primary" size="lg">
-                    <Play /> Resume
+                    <Play /> {t.detail.actions.resume}
                   </HomeButton>
                 )}
                 {inWatchlist ? (
@@ -300,7 +312,7 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                     onClick={toggleWatchlist}
                     disabled={busy}
                   >
-                    <BookmarkCheck /> In your watchlist
+                    <BookmarkCheck /> {t.detail.actions.inYourWatchlist}
                   </HomeButton>
                 ) : (
                   <HomeButton
@@ -309,7 +321,7 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                     onClick={toggleWatchlist}
                     disabled={busy}
                   >
-                    <Bookmark /> Add to watchlist
+                    <Bookmark /> {t.detail.actions.addToWatchlist}
                   </HomeButton>
                 )}
                 <HomeButton
@@ -320,11 +332,11 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                 >
                   {isWatched ? (
                     <>
-                      <Eye /> Watched
+                      <Eye /> {t.detail.actions.watched}
                     </>
                   ) : (
                     <>
-                      <EyeOff /> Mark watched
+                      <EyeOff /> {t.detail.actions.markWatched}
                     </>
                   )}
                 </HomeButton>
@@ -365,7 +377,7 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                 margin: 0,
               }}
             >
-              The story
+              {t.detail.sections.story}
             </h2>
             {m.description && (
               <p
@@ -410,10 +422,10 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                       margin: 0,
                     }}
                   >
-                    Trailers &amp; teasers
+                    {t.detail.sections.trailersAndTeasers}
                   </h3>
                   <Eyebrow color="var(--fg-subtle)">
-                    {trailers.length} clips
+                    {t.detail.meta.clips(trailers.length)}
                   </Eyebrow>
                 </div>
                 <div
@@ -432,41 +444,51 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
           </div>
 
           <aside>
-            <Eyebrow color="var(--fg-subtle)">Catalog</Eyebrow>
+            <Eyebrow color="var(--fg-subtle)">
+              {t.detail.sections.catalog}
+            </Eyebrow>
             <div style={{ marginTop: 14 }}>
               {m.director && m.director.length > 0 && (
-                <MetaRow label="Director">{m.director.join(", ")}</MetaRow>
+                <MetaRow label={t.detail.labels.director}>
+                  {m.director.join(", ")}
+                </MetaRow>
               )}
               {m.writer && m.writer.length > 0 && (
-                <MetaRow label="Writers">{m.writer.join(", ")}</MetaRow>
+                <MetaRow label={t.detail.labels.writers}>
+                  {m.writer.join(", ")}
+                </MetaRow>
               )}
               {genres.length > 0 && (
-                <MetaRow label="Genre">{genres.join(", ")}</MetaRow>
+                <MetaRow label={t.detail.labels.genre}>
+                  {genres.join(", ")}
+                </MetaRow>
               )}
               {m.runtime && (
-                <MetaRow label="Runtime">
+                <MetaRow label={t.detail.labels.runtime}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {m.runtime}
                   </span>
                 </MetaRow>
               )}
               {m.released && (
-                <MetaRow label="Released">
+                <MetaRow label={t.detail.labels.released}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {formatDate(m.released)}
                   </span>
                 </MetaRow>
               )}
-              {m.country && <MetaRow label="Country">{m.country}</MetaRow>}
+              {m.country && (
+                <MetaRow label={t.detail.labels.country}>{m.country}</MetaRow>
+              )}
               {m.imdb_id && (
-                <MetaRow label="IMDB">
+                <MetaRow label={t.detail.labels.imdb}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
                     {m.imdb_id}
                   </span>
                 </MetaRow>
               )}
               {m.awards && (
-                <MetaRow label="Awards">
+                <MetaRow label={t.detail.labels.awards}>
                   <span style={{ color: "var(--fg-muted)", fontSize: 12.5 }}>
                     {m.awards}
                   </span>
@@ -477,7 +499,9 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
             {/* Links */}
             {externalLinks.length > 0 && (
               <div style={{ marginTop: 28 }}>
-                <Eyebrow color="var(--fg-subtle)">Links</Eyebrow>
+                <Eyebrow color="var(--fg-subtle)">
+                  {t.detail.sections.links}
+                </Eyebrow>
                 <div
                   style={{
                     marginTop: 12,

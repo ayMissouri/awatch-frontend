@@ -13,17 +13,18 @@ import {
 } from "@/hooks/use-notifications";
 import { type Notification } from "@/lib/api";
 import { cn, imageUrl } from "@/lib/utils";
+import { t } from "@/i18n";
 
 // compacted time stamps: "now" / "5m" / "2h" / "3d" / "1w"
 function relativeTime(ms: number): string {
   const min = Math.floor((Date.now() - ms) / 60000);
-  if (min < 1) return "now";
-  if (min < 60) return `${min}m`;
+  if (min < 1) return t.home.notifications.time.now;
+  if (min < 60) return t.home.notifications.time.minutes(min);
   const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr}h`;
+  if (hr < 24) return t.home.notifications.time.hours(hr);
   const day = Math.floor(hr / 24);
-  if (day < 7) return `${day}d`;
-  return `${Math.floor(day / 7)}w`;
+  if (day < 7) return t.home.notifications.time.days(day);
+  return t.home.notifications.time.weeks(Math.floor(day / 7));
 }
 
 export function NotificationsMenu({ trigger }: { trigger: ReactNode }) {
@@ -58,7 +59,7 @@ export function NotificationsMenu({ trigger }: { trigger: ReactNode }) {
         >
           <div className="flex items-center justify-between border-b border-border px-3.5 py-3">
             <span className="text-[13px] font-semibold text-white">
-              Notifications
+              {t.home.notifications.title}
             </span>
             <button
               type="button"
@@ -66,17 +67,17 @@ export function NotificationsMenu({ trigger }: { trigger: ReactNode }) {
               disabled={!hasUnread || markAll.isPending}
               className="text-[11.5px] font-medium text-muted-foreground transition-colors hover:text-foreground disabled:cursor-default disabled:opacity-40 disabled:hover:text-muted-foreground"
             >
-              Mark all read
+              {t.home.notifications.markAllRead}
             </button>
           </div>
 
           {items.length === 0 ? (
             <div className="px-3.5 py-12 text-center">
               <div className="text-[12.5px] font-medium text-foreground">
-                You&rsquo;re all caught up
+                {t.home.notifications.caughtUp}
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
-                New activity will show up here.
+                {t.home.notifications.caughtUpSub}
               </div>
             </div>
           ) : (
@@ -131,7 +132,7 @@ export function NotificationsMenu({ trigger }: { trigger: ReactNode }) {
 
           <div className="p-2">
             <HomeButton variant="outline" size="sm" className="w-full">
-              See all activity
+              {t.home.notifications.seeAllActivity}
             </HomeButton>
           </div>
         </DropdownMenuPrimitive.Content>

@@ -1,4 +1,5 @@
 import { Bookmark, CircleCheck, Pause, Play, X } from "lucide-react"
+import { t } from "@/i18n"
 import type { CalendarEntry, WatchlistItem, WatchlistStatus } from "@/lib/api"
 
 export const STATUS_ORDER: WatchlistStatus[] = [
@@ -21,7 +22,7 @@ export const STATUS_META: Record<
   }
 > = {
   watching: {
-    label: "Watching",
+    label: t.watchlist.status.watching,
     icon: Play,
     dot: "bg-marquee",
     text: "text-marquee",
@@ -29,7 +30,7 @@ export const STATUS_META: Record<
     border: "border-marquee/35",
   },
   plan_to_watch: {
-    label: "Planned",
+    label: t.watchlist.status.planned,
     icon: Bookmark,
     dot: "bg-muted-foreground",
     text: "text-muted-foreground",
@@ -37,7 +38,7 @@ export const STATUS_META: Record<
     border: "border-border",
   },
   watched: {
-    label: "Watched",
+    label: t.watchlist.status.watched,
     icon: CircleCheck,
     dot: "bg-[#399d57]",
     text: "text-[#7ec19a]",
@@ -45,7 +46,7 @@ export const STATUS_META: Record<
     border: "border-[#399d57]/35",
   },
   paused: {
-    label: "Paused",
+    label: t.watchlist.status.paused,
     icon: Pause,
     dot: "bg-[#d79b3c]",
     text: "text-[#e0b04e]",
@@ -53,7 +54,7 @@ export const STATUS_META: Record<
     border: "border-[#d79b3c]/35",
   },
   dropped: {
-    label: "Dropped",
+    label: t.watchlist.status.dropped,
     icon: X,
     dot: "bg-[#e7000b]",
     text: "text-[#e86a62]",
@@ -69,7 +70,7 @@ export function showStatusFromEpisodes(watched: number, total: number): Watchlis
 }
 
 export function progressInfo(item: WatchlistItem): { pct: number; label: string } {
-  if (item.status === "watched") return { pct: 100, label: "Finished" }
+  if (item.status === "watched") return { pct: 100, label: t.watchlist.progress.finished }
 
   if (item.type === "tv") {
     const total = item.episodes_total ?? 0
@@ -81,14 +82,20 @@ export function progressInfo(item: WatchlistItem): { pct: number; label: string 
         label: `S${String(item.last_season_watched).padStart(2, "0")} · E${String(item.last_episode_watched).padStart(2, "0")}`,
       }
     }
-    return { pct, label: pct > 0 ? `${pct}% in` : "Not started" }
+    return {
+      pct,
+      label: pct > 0 ? t.watchlist.progress.percentIn(pct) : t.watchlist.progress.notStarted,
+    }
   }
 
   const pct =
     item.progress.duration > 0
       ? Math.round((item.progress.watched / item.progress.duration) * 100)
       : 0
-  return { pct, label: pct > 0 ? `${pct}% in` : "Not started" }
+  return {
+    pct,
+    label: pct > 0 ? t.watchlist.progress.percentIn(pct) : t.watchlist.progress.notStarted,
+  }
 }
 
 export function progressBarColor(item: WatchlistItem): string {

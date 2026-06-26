@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Bell, Film, Tv } from "lucide-react";
+import { t } from "@/i18n";
 import { cn, imageUrl } from "@/lib/utils";
 import { type CalendarRelease, releaseSub, releaseTag } from "./calendar-data";
 
@@ -73,7 +74,9 @@ export function ReleaseRow({
           <div className="mt-1.5 flex items-center gap-[7px]">
             <TypeIcon size={11} className="text-muted-foreground/70" />
             <span className="font-mono text-[10px] tracking-[0.05em] text-muted-foreground/70 uppercase">
-              {r.media_type === "tv" ? "Series" : "Movie"}
+              {r.media_type === "tv"
+                ? t.calendar.release.series
+                : t.calendar.release.movie}
             </span>
           </div>
         )}
@@ -85,7 +88,11 @@ export function ReleaseRow({
           e.stopPropagation();
           onRemind(r.id);
         }}
-        title={reminded ? "Reminder set" : "Remind me"}
+        title={
+          reminded
+            ? t.calendar.release.reminderSet
+            : t.calendar.release.remindMe
+        }
         className={cn(
           "inline-flex shrink-0 items-center justify-center border transition-colors",
           compact ? "size-[30px]" : "size-[34px]",

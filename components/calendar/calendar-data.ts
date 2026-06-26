@@ -1,4 +1,5 @@
 import type { CalendarEntry } from "@/lib/api";
+import { t } from "@/i18n";
 
 // A calendar entry with its release date parsed into a Date for grouping/sorting.
 export interface CalendarRelease extends CalendarEntry {
@@ -8,36 +9,10 @@ export interface CalendarRelease extends CalendarEntry {
 export type CalendarView = "month" | "agenda";
 export type CalendarType = "all" | "tv" | "movie";
 
-export const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-export const WEEKDAYS_NARROW = ["S", "M", "T", "W", "T", "F", "S"];
-export const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-export const MONTHS_SHORT = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+export const WEEKDAYS = t.calendar.weekdaysShort;
+export const WEEKDAYS_NARROW = t.calendar.weekdaysNarrow;
+export const MONTHS = t.calendar.months;
+export const MONTHS_SHORT = t.calendar.monthsShort;
 
 export const startOfDay = (d: Date) =>
   new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -55,10 +30,10 @@ export function toRelease(e: CalendarEntry): CalendarRelease {
 export function releaseTag(r: CalendarRelease): string {
   if (r.media_type === "tv") {
     if (r.season != null && r.episode != null)
-      return `S${r.season} · E${r.episode}`;
-    return "New episode";
+      return t.calendar.release.seasonEpisode(r.season, r.episode);
+    return t.calendar.release.newEpisode;
   }
-  return "Premiere";
+  return t.calendar.release.premiere;
 }
 
 export function releaseSub(r: CalendarRelease): string {

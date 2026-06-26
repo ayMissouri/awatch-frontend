@@ -4,6 +4,7 @@
 import * as React from "react";
 import { Check, Play, Star } from "lucide-react";
 import type { Episode } from "@/lib/api";
+import { t } from "@/i18n";
 
 export const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -258,7 +259,7 @@ export function StatusPill({
 export function CastGrid({
   cast,
   columns = 4,
-  title = "Cast",
+  title = t.detail.sections.cast,
 }: {
   cast: string[];
   columns?: number;
@@ -286,7 +287,9 @@ export function CastGrid({
           >
             {title}
           </h3>
-          <Eyebrow color="var(--fg-subtle)">{cast.length} credited</Eyebrow>
+          <Eyebrow color="var(--fg-subtle)">
+            {t.detail.meta.credited(cast.length)}
+          </Eyebrow>
         </div>
       )}
       <div
@@ -355,7 +358,7 @@ export function CastGrid({
                   marginTop: 2,
                 }}
               >
-                Cast
+                {t.detail.episode.cast}
               </div>
             </div>
           </div>
@@ -637,7 +640,11 @@ export function EpisodeRow({
           >
             {ep.title}
           </span>
-          {isNext && <Eyebrow color="var(--marquee-500)">Up next</Eyebrow>}
+          {isNext && (
+            <Eyebrow color="var(--marquee-500)">
+              {t.detail.episode.upNext}
+            </Eyebrow>
+          )}
         </div>
         <MetaInline
           color="var(--fg-subtle)"

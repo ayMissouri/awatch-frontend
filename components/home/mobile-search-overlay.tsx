@@ -15,6 +15,7 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useNavUI } from "@/lib/ui-store";
 import { addRecentSearch, getRecentSearches } from "@/lib/recent-searches";
 import { detailHref } from "@/lib/utils";
+import { t } from "@/i18n";
 
 const MAX_RESULTS = 12;
 
@@ -65,7 +66,7 @@ export function MobileSearchOverlay() {
           className="fixed inset-0 z-190 flex flex-col bg-background outline-none duration-200 data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-bottom-4 data-closed:animate-out data-closed:fade-out-0 md:hidden"
         >
           <DialogPrimitive.Title className="sr-only">
-            Search
+            {t.home.search.titleShort}
           </DialogPrimitive.Title>
 
           {/* Input row */}
@@ -74,7 +75,7 @@ export function MobileSearchOverlay() {
               variant="ghost"
               size={36}
               onClick={() => setOpen(false)}
-              aria-label="Close search"
+              aria-label={t.home.search.a11y.closeSearch}
             >
               <ChevronLeft />
             </HomeIconButton>
@@ -91,14 +92,14 @@ export function MobileSearchOverlay() {
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search movies and shows…"
+                placeholder={t.home.search.placeholder}
                 className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  aria-label="Clear"
+                  aria-label={t.home.search.a11y.clear}
                   className="inline-flex text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <X size={14} />
@@ -118,7 +119,7 @@ export function MobileSearchOverlay() {
               recent.length > 0 ? (
                 <div className="px-5 pt-3.5">
                   <div className="mb-2.5 font-mono text-[9px] tracking-[0.14em] text-muted-foreground/80 uppercase">
-                    Recent
+                    {t.home.search.recent}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {recent.map((term) => (
@@ -139,18 +140,24 @@ export function MobileSearchOverlay() {
                 </div>
               ) : (
                 <div className="px-6 py-16 text-center text-sm text-muted-foreground">
-                  Search the catalog for movies and shows.
+                  {t.home.search.empty}
                 </div>
               )
             ) : results.length === 0 && !isFetching ? (
               <div className="px-6 py-16 text-center text-sm text-muted-foreground">
-                No {scope === "movie" ? "movies" : "shows"} match “
-                {debounced.trim()}”.
+                {t.home.search.noMatch(
+                  scope === "movie"
+                    ? t.home.search.moviesLower
+                    : t.home.search.showsLower,
+                  debounced.trim(),
+                )}
               </div>
             ) : (
               <div className="pt-3.5">
                 <div className="flex items-center justify-between px-5 pb-2 font-mono text-[9px] tracking-[0.14em] text-muted-foreground/80 uppercase">
-                  <span>{scope === "movie" ? "Movies" : "Shows"}</span>
+                  <span>
+                    {scope === "movie" ? t.home.search.movies : t.home.search.shows}
+                  </span>
                   <span>{results.length}</span>
                 </div>
                 <div className="border-t border-border">

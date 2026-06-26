@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { STATUS_META, STATUS_ORDER } from "@/lib/watchlist-status";
 import type { WatchlistStatus } from "@/lib/api";
@@ -14,7 +15,7 @@ export function StatusChips({
   counts: Record<string, number>;
 }) {
   const chips: { id: Tab; label: string; dot?: string }[] = [
-    { id: "all", label: "All" },
+    { id: "all", label: t.watchlist.filter.all },
     ...STATUS_ORDER.map((s) => ({
       id: s as Tab,
       label: STATUS_META[s].label,

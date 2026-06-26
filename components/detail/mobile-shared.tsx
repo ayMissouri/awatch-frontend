@@ -11,6 +11,7 @@ import {
   StarRating,
   type DetailEpisode,
 } from "@/components/detail/shared";
+import { t } from "@/i18n";
 
 export const DPAD = 20;
 export const MTOPBAR_H = 52;
@@ -66,7 +67,7 @@ export function MTopBar({
         size={38}
         variant={solid ? "ghost" : "outlineLight"}
         onClick={onBack}
-        aria-label="Go back"
+        aria-label={t.detail.topBar.goBack}
       >
         <ChevronLeft />
       </HomeIconButton>
@@ -90,7 +91,7 @@ export function MTopBar({
       <HomeIconButton
         size={38}
         variant={solid ? "ghost" : "outlineLight"}
-        aria-label="More"
+        aria-label={t.detail.topBar.more}
       >
         <MoreHorizontal />
       </HomeIconButton>
@@ -307,7 +308,7 @@ export function MCastScroll({ cast }: { cast: string[] }) {
                 marginTop: 3,
               }}
             >
-              Cast
+              {t.detail.episode.cast}
             </div>
           </div>
         </div>
@@ -443,7 +444,7 @@ export function MEpisodeRow({
             {isNext && (
               <div style={{ marginBottom: 3 }}>
                 <Eyebrow color="var(--marquee-500)" style={{ fontSize: 8.5 }}>
-                  Up next
+                  {t.detail.episode.upNext}
                 </Eyebrow>
               </div>
             )}

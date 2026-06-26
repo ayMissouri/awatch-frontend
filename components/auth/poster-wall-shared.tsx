@@ -6,6 +6,7 @@ import Link from "next/link";
 import { HomeButton } from "@/components/home/home-button";
 import { useDiscoverAll } from "@/hooks/use-discover";
 import { imageUrl } from "@/lib/utils";
+import { t } from "@/i18n";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -34,7 +35,7 @@ export function HomeWordmark({ size = 20 }: { size?: number }) {
   return (
     <Link
       href="/"
-      aria-label="awatch.fun home"
+      aria-label={t.auth.login.wordmarkHomeLabel}
       style={{ display: "inline-flex" }}
     >
       <Wordmark size={size} />
@@ -105,7 +106,7 @@ export function DiscordCTA() {
       href={`${API_URL}/auth/login`}
       className="w-full"
     >
-      <DiscordGlyph /> Continue with Discord
+      <DiscordGlyph /> {t.auth.login.continueWith("Discord")}
     </HomeButton>
   );
 }
@@ -119,7 +120,7 @@ export function LegalNote() {
         color: "var(--fg-subtle)",
       }}
     >
-      By continuing you agree to our{" "}
+      {t.auth.login.legal.prefix}
       <a
         href="#"
         style={{
@@ -128,9 +129,9 @@ export function LegalNote() {
           textUnderlineOffset: 3,
         }}
       >
-        terms
-      </a>{" "}
-      and{" "}
+        {t.auth.login.legal.terms}
+      </a>
+      {t.auth.login.legal.conjunction}
       <a
         href="#"
         style={{
@@ -139,7 +140,7 @@ export function LegalNote() {
           textUnderlineOffset: 3,
         }}
       >
-        privacy notice
+        {t.auth.login.legal.privacy}
       </a>
       .
     </span>
