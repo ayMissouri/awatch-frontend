@@ -31,6 +31,7 @@ import {
   StarRating,
   StatusPill,
   groupSeasons,
+  isEpisodeUnaired,
   type DetailEpisode,
 } from "@/components/detail/shared";
 import type { SeriesDetail, WatchlistItem } from "@/lib/api";
@@ -93,7 +94,7 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
   const totalEps = orderedEps.length;
   const watchedEps = boundaryIndex + 1;
   const minSeason = ordered[0]?.season ?? 1;
-  const next = orderedEps.find((e) => !e.watched) ?? null;
+  const next = orderedEps.find((e) => !e.watched && !isEpisodeUnaired(e)) ?? null;
 
   const [openSeason, setOpenSeason] = React.useState<number | null>(() => {
     if (itemLastSeason != null && itemLastSeason !== 0) return itemLastSeason;

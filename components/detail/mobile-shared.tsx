@@ -7,6 +7,8 @@ import { HomeIconButton } from "@/components/home/home-button";
 import {
   EASE_OUT,
   Eyebrow,
+  isEpisodeTBA,
+  isEpisodeUnaired,
   MetaInline,
   StarRating,
   type DetailEpisode,
@@ -326,7 +328,10 @@ export function MEpisodeRow({
   isNext?: boolean;
   onToggle?: (ep: DetailEpisode) => void;
 }) {
-  const showOverview = isNext || !ep.watched;
+  const unaired = isEpisodeUnaired(ep);
+  const tba = isEpisodeTBA(ep);
+  const showNext = isNext && !unaired;
+  const showOverview = showNext || !ep.watched;
   return (
     <div
       style={{
@@ -334,11 +339,11 @@ export function MEpisodeRow({
         gap: 14,
         padding: "16px 0",
         borderTop: "1px solid var(--border)",
-        opacity: ep.watched && !isNext ? 0.6 : 1,
-        borderLeft: isNext
+        opacity: ep.watched && !showNext ? 0.6 : unaired ? 0.7 : 1,
+        borderLeft: showNext
           ? "2px solid var(--marquee-500)"
           : "2px solid transparent",
-        paddingLeft: isNext ? DPAD - 2 : DPAD,
+        paddingLeft: showNext ? DPAD - 2 : DPAD,
         paddingRight: DPAD,
         transition: `opacity 160ms ${EASE_OUT}`,
       }}
@@ -370,7 +375,7 @@ export function MEpisodeRow({
             lineHeight: 1.05,
           }}
         >
-          {ep.title}
+          {tba ? t.detail.episode.tba : ep.title}
         </div>
         {ep.thumbnail && (
           <img
@@ -396,7 +401,7 @@ export function MEpisodeRow({
             fontFamily: "var(--font-mono)",
             fontSize: 9,
             fontWeight: 600,
-            color: isNext ? "var(--marquee-500)" : "white",
+            color: showNext ? "var(--marquee-500)" : "white",
             background: "rgba(0,0,0,0.7)",
             padding: "2px 5px",
             lineHeight: 1,
@@ -404,7 +409,7 @@ export function MEpisodeRow({
         >
           E{String(ep.episode).padStart(2, "0")}
         </div>
-        {isNext && (
+        {showNext && (
           <div
             style={{
               position: "absolute",
@@ -441,10 +446,17 @@ export function MEpisodeRow({
           }}
         >
           <div style={{ minWidth: 0, flex: 1 }}>
-            {isNext && (
+            {showNext && (
               <div style={{ marginBottom: 3 }}>
                 <Eyebrow color="var(--marquee-500)" style={{ fontSize: 8.5 }}>
                   {t.detail.episode.upNext}
+                </Eyebrow>
+              </div>
+            )}
+            {tba && (
+              <div style={{ marginBottom: 3 }}>
+                <Eyebrow color="var(--fg-subtle)" style={{ fontSize: 8.5 }}>
+                  {t.detail.episode.tba}
                 </Eyebrow>
               </div>
             )}
@@ -463,8 +475,11 @@ export function MEpisodeRow({
           {/* watched toggle */}
           <button
             type="button"
+            disabled={unaired}
+            aria-label={t.detail.actions.markWatched}
             onClick={(e) => {
               e.stopPropagation();
+              if (unaired) return;
               onToggle?.(ep);
             }}
             style={{
@@ -479,7 +494,8 @@ export function MEpisodeRow({
               border: ep.watched
                 ? "1px solid var(--marquee-500)"
                 : "1px solid var(--border-strong)",
-              cursor: "pointer",
+              cursor: unaired ? "not-allowed" : "pointer",
+              opacity: unaired ? 0.4 : 1,
               transition: `all 160ms ${EASE_OUT}`,
             }}
           >

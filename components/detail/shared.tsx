@@ -10,6 +10,18 @@ export const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export type DetailEpisode = Episode & { watched: boolean; runtime?: string };
 
+export function isEpisodeUnaired(ep: DetailEpisode): boolean {
+  if (ep.released) {
+    const releasedAt = new Date(ep.released).getTime();
+    return Number.isNaN(releasedAt) || releasedAt > Date.now();
+  }
+  return !ep.thumbnail && !ep.overview;
+}
+
+export function isEpisodeTBA(ep: DetailEpisode): boolean {
+  return isEpisodeUnaired(ep) && !ep.thumbnail && !ep.overview;
+}
+
 export interface SeasonGroup {
   season: number;
   episodes: DetailEpisode[];
@@ -528,6 +540,9 @@ export function EpisodeRow({
   onToggle?: (ep: DetailEpisode) => void;
 }) {
   const [hover, setHover] = React.useState(false);
+  const unaired = isEpisodeUnaired(ep);
+  const tba = isEpisodeTBA(ep);
+  const showNext = isNext && !unaired;
   return (
     <div
       onMouseEnter={() => setHover(true)}
@@ -539,7 +554,7 @@ export function EpisodeRow({
         padding: "16px 0",
         borderTop: "1px solid var(--border)",
         alignItems: "flex-start",
-        opacity: ep.watched ? 0.62 : 1,
+        opacity: ep.watched ? 0.62 : unaired ? 0.7 : 1,
         transition: `opacity 160ms ${EASE_OUT}`,
       }}
     >
@@ -551,8 +566,8 @@ export function EpisodeRow({
             fontSize: 38,
             lineHeight: 1,
             letterSpacing: "-0.02em",
-            color: isNext ? "var(--marquee-500)" : "var(--fg-subtle)",
-            fontStyle: isNext ? "italic" : "normal",
+            color: showNext ? "var(--marquee-500)" : "var(--fg-subtle)",
+            fontStyle: showNext ? "italic" : "normal",
           }}
         >
           {String(ep.episode).padStart(2, "0")}
@@ -589,10 +604,10 @@ export function EpisodeRow({
               lineHeight: 1,
             }}
           >
-            {ep.title}
+            {tba ? t.detail.episode.tba : ep.title}
           </div>
         )}
-        {isNext && (
+        {showNext && (
           <div
             style={{
               position: "absolute",
@@ -640,10 +655,13 @@ export function EpisodeRow({
           >
             {ep.title}
           </span>
-          {isNext && (
+          {showNext && (
             <Eyebrow color="var(--marquee-500)">
               {t.detail.episode.upNext}
             </Eyebrow>
+          )}
+          {tba && (
+            <Eyebrow color="var(--fg-subtle)">{t.detail.episode.tba}</Eyebrow>
           )}
         </div>
         <MetaInline
@@ -681,8 +699,11 @@ export function EpisodeRow({
       <div style={{ paddingTop: 6 }}>
         <button
           type="button"
+          disabled={unaired}
+          aria-label={t.detail.actions.markWatched}
           onClick={(e) => {
             e.stopPropagation();
+            if (unaired) return;
             onToggle?.(ep);
           }}
           style={{
@@ -695,11 +716,12 @@ export function EpisodeRow({
             background: ep.watched ? "var(--marquee-500)" : "transparent",
             border: ep.watched
               ? "1px solid var(--marquee-500)"
-              : hover
+              : hover && !unaired
                 ? "1px solid var(--border-strong)"
                 : "1px solid var(--border)",
             transition: `all 160ms ${EASE_OUT}`,
-            cursor: "pointer",
+            cursor: unaired ? "not-allowed" : "pointer",
+            opacity: unaired ? 0.4 : 1,
           }}
         >
           {ep.watched && <Check size={14} style={{ color: "#fff" }} />}

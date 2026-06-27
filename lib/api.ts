@@ -231,7 +231,7 @@ export const discoverApi = {
   },
   search: (query: string, type?: "movie" | "tv") => {
     const params = new URLSearchParams({ q: query })
-    if (type) params.set("type", type)
+    if (type) params.set("type", type === "tv" ? "series" : "movie")
     return apiFetch<{ items: DiscoverItem[]; query: string }>(`/search?${params}`)
   },
 }

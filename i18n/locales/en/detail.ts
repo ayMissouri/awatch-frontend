@@ -83,6 +83,7 @@ export const detail = {
   episode: {
     upNext: "Up next",
     cast: "Cast",
+    tba: "TBA",
   },
   season: {
     label: (n: number) => `Season ${n}`,
