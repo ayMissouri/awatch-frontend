@@ -22,14 +22,17 @@ export function ReleaseRow({
   const poster = imageUrl(r.poster_path, "w185");
   const sub = releaseSub(r);
   const TypeIcon = r.media_type === "tv" ? Tv : Film;
+  const href = r.link
+    ? `${r.link}${r.link.includes("?") ? "&" : "?"}from=calendar`
+    : undefined;
 
   return (
     <div
-      role={r.link ? "link" : undefined}
-      onClick={() => r.link && router.push(r.link)}
+      role={href ? "link" : undefined}
+      onClick={() => href && router.push(href)}
       className={cn(
         "grid items-center transition-colors hover:bg-card",
-        r.link && "cursor-pointer",
+        href && "cursor-pointer",
         compact
           ? "grid-cols-[34px_minmax(0,1fr)_auto] gap-[11px] px-1 py-2"
           : "grid-cols-[44px_minmax(0,1fr)_auto] gap-3.5 px-2 py-3",
