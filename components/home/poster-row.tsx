@@ -1,20 +1,26 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { HomeIconButton } from "@/components/home/home-button";
 import { PosterCard, type HomePosterItem } from "@/components/home/poster-card";
 import { t } from "@/i18n";
 
 export function SeeAll({
+  href,
   children = t.home.rails.seeAll,
 }: {
+  href: string;
   children?: ReactNode;
 }) {
   return (
-    <a className="inline-flex cursor-pointer items-center gap-1 px-2 text-xs font-medium text-muted-foreground">
+    <Link
+      href={href}
+      className="inline-flex cursor-pointer items-center gap-1 px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+    >
       {children} <ChevronRight size={12} />
-    </a>
+    </Link>
   );
 }
 

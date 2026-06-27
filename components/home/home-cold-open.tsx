@@ -118,25 +118,41 @@ export function HomeColdOpen() {
               title={t.home.rails.popularMovies}
               eyebrow={t.home.rails.thisWeek}
               items={discover.popular_movies.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allMovies}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=movie">
+                  {t.home.rails.allMovies}
+                </SeeAll>
+              }
             />
             <PosterRow
               title={t.home.rails.popularShows}
               eyebrow={t.home.rails.thisWeek}
               items={discover.popular_shows.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allShows}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=tv">
+                  {t.home.rails.allShows}
+                </SeeAll>
+              }
             />
             <PosterRow
               title={t.home.rails.topRatedMovies}
               eyebrow={t.home.rails.allTime}
               items={discover.top_rated_movies.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=movie&curation=featured">
+                  {t.home.rails.allTime}
+                </SeeAll>
+              }
             />
             <PosterRow
               title={t.home.rails.topRatedShows}
               eyebrow={t.home.rails.allTime}
               items={discover.top_rated_shows.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=tv&curation=featured">
+                  {t.home.rails.allTime}
+                </SeeAll>
+              }
             />
           </>
         )}

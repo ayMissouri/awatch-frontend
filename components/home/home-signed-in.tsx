@@ -100,7 +100,7 @@ export function HomeSignedIn() {
               <h2 className="font-display text-2xl leading-none tracking-[-0.005em] text-foreground md:text-[32px]">
                 {t.home.rails.continueWatching}
               </h2>
-              <SeeAll />
+              <SeeAll href="/watchlist" />
             </div>
             <div className="grid grid-cols-1 gap-2.5 md:grid-cols-[repeat(auto-fit,minmax(340px,1fr))] md:gap-[18px]">
               {continueWatching.map((item) => (
@@ -111,7 +111,7 @@ export function HomeSignedIn() {
         )}
 
         {upNext.length > 0 && (
-          <CardRow title={t.home.rails.upNext} action={<SeeAll />}>
+          <CardRow title={t.home.rails.upNext} action={<SeeAll href="/watchlist" />}>
             {upNext.map((item) => (
               <UpNextCard key={item.id} item={item} />
             ))}
@@ -128,22 +128,38 @@ export function HomeSignedIn() {
             <PosterRow
               title={t.home.rails.popularMovies}
               items={discover.popular_movies.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allMovies}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=movie">
+                  {t.home.rails.allMovies}
+                </SeeAll>
+              }
             />
             <PosterRow
               title={t.home.rails.popularShows}
               items={discover.popular_shows.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allShows}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=tv">
+                  {t.home.rails.allShows}
+                </SeeAll>
+              }
             />
             <PosterRow
               title={t.home.rails.topRatedMovies}
               items={discover.top_rated_movies.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=movie&curation=featured">
+                  {t.home.rails.allTime}
+                </SeeAll>
+              }
             />
             <PosterRow
               title={t.home.rails.topRatedShows}
               items={discover.top_rated_shows.map(toPosterItem)}
-              action={<SeeAll>{t.home.rails.allTime}</SeeAll>}
+              action={
+                <SeeAll href="/discover?type=tv&curation=featured">
+                  {t.home.rails.allTime}
+                </SeeAll>
+              }
             />
           </>
         )}
