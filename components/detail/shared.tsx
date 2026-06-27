@@ -607,31 +607,6 @@ export function EpisodeRow({
             {tba ? t.detail.episode.tba : ep.title}
           </div>
         )}
-        {showNext && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,0.4)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                background: "var(--marquee-500)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Play size={14} style={{ color: "#fff" }} fill="#fff" />
-            </div>
-          </div>
-        )}
       </div>
       {/* title + overview */}
       <div style={{ minWidth: 0, paddingTop: 2 }}>

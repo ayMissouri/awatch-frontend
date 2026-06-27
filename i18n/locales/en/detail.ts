@@ -26,9 +26,6 @@ export const detail = {
     ended: "Ended",
   },
   actions: {
-    resume: "Resume",
-    play: "Play",
-    rewatchFromStart: "Rewatch from start",
     addToWatchlist: "Add to watchlist",
     inYourWatchlist: "In your watchlist",
     removeFromWatchlist: "Remove from watchlist",
@@ -88,9 +85,5 @@ export const detail = {
   season: {
     label: (n: number) => `Season ${n}`,
     labelPadded: (n: string) => `Season ${n}`,
-  },
-  playEpisode: {
-    label: (code: string, title: string) => `Play ${code} — ${title}`,
-    resumeMinutes: (watchedMin: number) => `Resume · ${watchedMin}m in`,
   },
 };

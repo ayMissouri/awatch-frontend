@@ -8,7 +8,6 @@ import {
   Eye,
   EyeOff,
   MoreHorizontal,
-  Play,
 } from "lucide-react";
 import { Header } from "@/components/home/header";
 import { HomeButton, HomeIconButton } from "@/components/home/home-button";
@@ -300,11 +299,6 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                   flexWrap: "wrap",
                 }}
               >
-                {hasProgress && (
-                  <HomeButton variant="primary" size="lg">
-                    <Play /> {t.detail.actions.resume}
-                  </HomeButton>
-                )}
                 {inWatchlist ? (
                   <HomeButton
                     variant="outlineLight"

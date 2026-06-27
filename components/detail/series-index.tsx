@@ -7,7 +7,6 @@ import {
   BookmarkCheck,
   ChevronRight,
   MoreHorizontal,
-  Play,
 } from "lucide-react";
 import { Header } from "@/components/home/header";
 import { HomeButton, HomeIconButton } from "@/components/home/home-button";
@@ -327,15 +326,6 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                   flexWrap: "wrap",
                 }}
               >
-                {next && (
-                  <HomeButton variant="primary" size="lg">
-                    <Play />{" "}
-                    {t.detail.playEpisode.label(
-                      `S${pad2(next.season)}E${pad2(next.episode)}`,
-                      next.title,
-                    )}
-                  </HomeButton>
-                )}
                 {inWatchlist ? (
                   <HomeButton
                     variant="outlineLight"

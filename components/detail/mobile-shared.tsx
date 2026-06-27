@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronLeft, MoreHorizontal, Play } from "lucide-react";
+import { Check, ChevronLeft, MoreHorizontal } from "lucide-react";
 import { HomeIconButton } from "@/components/home/home-button";
 import {
   EASE_OUT,
@@ -409,31 +409,6 @@ export function MEpisodeRow({
         >
           E{String(ep.episode).padStart(2, "0")}
         </div>
-        {showNext && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,0.35)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                background: "var(--marquee-500)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Play size={13} style={{ color: "#fff" }} fill="#fff" />
-            </div>
-          </div>
-        )}
       </div>
       {/* text */}
       <div style={{ minWidth: 0, flex: 1 }}>

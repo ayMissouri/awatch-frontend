@@ -3,8 +3,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Bookmark, BookmarkCheck, ChevronRight, Play } from "lucide-react";
-import { HomeButton, HomeIconButton } from "@/components/home/home-button";
+import { Bookmark, BookmarkCheck, ChevronRight } from "lucide-react";
+import { HomeIconButton } from "@/components/home/home-button";
 import {
   useDeleteWatchlistItem,
   useUpdateProgress,
@@ -532,27 +532,6 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
 
       {/* ACTION BAR */}
       <MActionBar>
-        <HomeButton
-          variant="primary"
-          size="lg"
-          style={{ flex: 1, minWidth: 0 }}
-        >
-          <Play />
-          <span
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {next
-              ? t.detail.playEpisode.label(
-                  `S${pad2(next.season)}E${pad2(next.episode)}`,
-                  next.title,
-                )
-              : t.detail.actions.rewatchFromStart}
-          </span>
-        </HomeButton>
         <HomeIconButton
           size={44}
           variant={inWatchlist ? "secondary" : "outline"}

@@ -19,7 +19,7 @@ import {
   StatusPill,
   TrailerTile,
 } from "@/components/detail/shared";
-import { HomeButton, HomeIconButton } from "@/components/home/home-button";
+import { HomeIconButton } from "@/components/home/home-button";
 import {
   useDeleteWatchlistItem,
   useUpdateWatchlistStatus,
@@ -27,7 +27,7 @@ import {
 } from "@/hooks/use-watchlist";
 import type { MovieDetail, WatchlistItem } from "@/lib/api";
 import { buildWatchlistItem } from "@/lib/utils";
-import { Bookmark, BookmarkCheck, Eye, EyeOff, Play } from "lucide-react";
+import { Bookmark, BookmarkCheck, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { t } from "@/i18n";
 
@@ -326,12 +326,6 @@ export function MovieBackdropMobile({
 
       {/* ACTION BAR */}
       <MActionBar>
-        <HomeButton variant="primary" size="lg" style={{ flex: 1 }}>
-          <Play />{" "}
-          {hasProgress
-            ? t.detail.playEpisode.resumeMinutes(watchedMin)
-            : t.detail.actions.play}
-        </HomeButton>
         <HomeIconButton
           size={44}
           variant={inWatchlist ? "secondary" : "outline"}

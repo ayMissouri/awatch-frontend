@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Play } from "lucide-react";
 import type { ReactNode } from "react";
-import { HomeButton } from "@/components/home/home-button";
 import { nextEpisode } from "@/lib/watchlist-status";
 import { detailHref, imageUrl } from "@/lib/utils";
 import type { WatchlistItem } from "@/lib/api";
@@ -103,16 +101,6 @@ export function ContinueWatchingCard({ item }: { item: WatchlistItem }) {
         <span className="font-mono text-[9px] tracking-wide text-muted-foreground uppercase">
           {remainingLabel}
         </span>
-        <HomeButton
-          variant="secondary"
-          size="xs"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
-          <Play /> {t.home.card.resume}
-        </HomeButton>
       </div>
     </CardFrame>
   );
@@ -140,16 +128,6 @@ export function UpNextCard({ item }: { item: WatchlistItem }) {
         <span className="font-mono text-[9px] tracking-wide text-muted-foreground uppercase">
           {started ? t.home.card.nextEpisode : t.home.card.notStarted}
         </span>
-        <HomeButton
-          variant="secondary"
-          size="xs"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
-          <Play /> {t.home.card.play}
-        </HomeButton>
       </div>
     </CardFrame>
   );

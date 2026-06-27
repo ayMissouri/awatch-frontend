@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Plus } from "lucide-react";
-import { HomeButton } from "@/components/home/home-button";
+import { Star } from "lucide-react";
 import { cn, detailHref } from "@/lib/utils";
 import { t } from "@/i18n";
 
@@ -70,34 +69,6 @@ export function PosterCard({
             {item.rating}
           </div>
         )}
-        <div
-          className={cn(
-            "absolute inset-0 flex flex-col justify-end gap-2 p-3 transition-opacity duration-200",
-            "bg-[linear-gradient(180deg,transparent_30%,rgba(0,0,0,0.92)_100%)]",
-            hover ? "opacity-100" : "opacity-0",
-          )}
-        >
-          <div>
-            <div className="text-[13px] leading-tight font-semibold text-white">
-              {item.title}
-            </div>
-            <div className="mt-1 font-mono text-[9px] tracking-wide text-white/70 uppercase">
-              {typeLabel(item.type)}
-              {item.year ? ` · ${item.year}` : ""}
-            </div>
-          </div>
-          <HomeButton
-            variant="secondary"
-            size="xs"
-            className="w-full"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            <Plus /> {t.home.card.add}
-          </HomeButton>
-        </div>
       </div>
       <div className="flex flex-col gap-0.5 pt-0.5">
         <div className="truncate text-[12.5px] font-medium text-foreground">

@@ -134,9 +134,6 @@ export const home = {
   card: {
     continueWatching: "Continue watching",
     upNext: "Up next",
-    resume: "Resume",
-    play: "Play",
-    add: "Add",
     nextEpisode: "Next episode",
     notStarted: "Not started",
     episodesLeft: (n: number) => `${n} episode${n === 1 ? "" : "s"} left`,
