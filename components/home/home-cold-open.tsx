@@ -3,6 +3,7 @@
 import { LogIn } from "lucide-react";
 import { Header } from "@/components/home/header";
 import { HomeButton } from "@/components/home/home-button";
+import { LoadingScreen } from "@/components/home/loading-screen";
 import { PosterRow, SeeAll } from "@/components/home/poster-row";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDiscoverAll } from "@/hooks/use-discover";
@@ -84,6 +85,7 @@ export function HomeColdOpen() {
 
   return (
     <div className="min-h-full bg-background text-foreground">
+      <LoadingScreen ready={!isLoading} stages={t.home.loading.stages.guest} />
       <Header user={null} />
       <Hero />
 

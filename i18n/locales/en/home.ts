@@ -88,6 +88,24 @@ export const home = {
     addToWatchlist: "Add to watchlist",
     slideLabel: (n: number) => `Show slide ${n}`,
   },
+  loading: {
+    a11yStatus: "Loading awatch.fun",
+    ready: "Ready",
+    stages: {
+      member: [
+        { at: 0, text: "Connecting" },
+        { at: 0.3, text: "Syncing your watchlist" },
+        { at: 0.7, text: "Loading posters" },
+        { at: 0.94, text: "Almost there" },
+      ],
+      guest: [
+        { at: 0, text: "Connecting" },
+        { at: 0.3, text: "Curating the catalog" },
+        { at: 0.7, text: "Loading posters" },
+        { at: 0.94, text: "Almost there" },
+      ],
+    },
+  },
   coldOpen: {
     eyebrow: "An honest watchlist",
     titleLine1: "Track everything ",

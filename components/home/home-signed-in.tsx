@@ -6,6 +6,7 @@ import {
   UpNextCard,
 } from "@/components/home/continue-watching-card";
 import { HeroCarousel } from "@/components/home/hero-carousel";
+import { LoadingScreen } from "@/components/home/loading-screen";
 import { MobileBottomNav } from "@/components/home/mobile-bottom-nav";
 import { CardRow, PosterRow, SeeAll } from "@/components/home/poster-row";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -79,6 +80,8 @@ export function HomeSignedIn() {
   });
   const { data: calendar } = useCalendar();
 
+  const ready = !discoverLoading;
+
   const items = watchlist?.items ?? [];
   const releases = buildReleaseLookup(calendar?.items ?? []);
   const continueWatching = items.filter(isContinueWatching).slice(0, 3);
@@ -90,6 +93,7 @@ export function HomeSignedIn() {
 
   return (
     <div className="min-h-full bg-background text-foreground">
+      <LoadingScreen ready={ready} stages={t.home.loading.stages.member} />
       <Header user={user} />
       {discoverLoading ? <HeroSkeleton /> : <HeroCarousel items={heroItems} />}
 
@@ -111,7 +115,10 @@ export function HomeSignedIn() {
         )}
 
         {upNext.length > 0 && (
-          <CardRow title={t.home.rails.upNext} action={<SeeAll href="/watchlist" />}>
+          <CardRow
+            title={t.home.rails.upNext}
+            action={<SeeAll href="/watchlist" />}
+          >
             {upNext.map((item) => (
               <UpNextCard key={item.id} item={item} />
             ))}
