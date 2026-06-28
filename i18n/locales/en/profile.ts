@@ -69,6 +69,7 @@ export const profile = {
       paused: "Paused",
       film: (year: number) => `Film · ${year}`,
       filmShort: "Film",
+      episodes: (count: number, through: string) => `${count} episodes · through ${through}`,
     },
     when: {
       now: "now",

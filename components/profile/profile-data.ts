@@ -218,7 +218,9 @@ function subFor(ev: UserEvent, verb: ActivityType): string {
       return s.paused;
     case "watched":
       if (ev.event_type === "episode_watch") {
-        return epLabel(ev.season ?? 0, ev.episode ?? 0);
+        const ep = epLabel(ev.season ?? 0, ev.episode ?? 0);
+        const delta = Number(ev.metadata?.delta ?? 1);
+        return delta > 1 ? s.episodes(delta, ep) : ep;
       }
       return ev.release_year ? s.film(ev.release_year) : s.filmShort;
   }
