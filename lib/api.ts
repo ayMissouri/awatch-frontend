@@ -379,6 +379,19 @@ export interface EventsResponse {
   items: UserEvent[]
 }
 
+export interface EventsQuery {
+  limit?: number
+  from?: number
+  to?: number
+}
+
 export const eventsApi = {
-  list: (limit = 50) => apiFetch<EventsResponse>(`/events?limit=${limit}`),
+  list: (query: EventsQuery = {}) => {
+    const params = new URLSearchParams()
+    if (query.limit) params.set("limit", String(query.limit))
+    if (query.from) params.set("from", String(query.from))
+    if (query.to) params.set("to", String(query.to))
+    const qs = params.toString()
+    return apiFetch<EventsResponse>(`/events${qs ? `?${qs}` : ""}`)
+  },
 }

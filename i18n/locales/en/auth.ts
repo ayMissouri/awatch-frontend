@@ -21,6 +21,7 @@ export const auth = {
     discover: "Discover",
     watchlist: "Watchlist",
     calendar: "Calendar",
+    activity: "Activity",
     search: "Search",
     movies: "Movies",
     shows: "Shows",

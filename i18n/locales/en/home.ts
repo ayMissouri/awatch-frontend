@@ -51,6 +51,7 @@ export const home = {
   },
   account: {
     yourProfile: "Your profile",
+    activity: "Activity",
     watchlist: "Watchlist",
     calendar: "Calendar",
     continueWatching: "Continue watching",

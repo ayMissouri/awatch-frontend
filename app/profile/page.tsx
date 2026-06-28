@@ -2,14 +2,17 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { Header } from "@/components/home/header";
 import { MobileBottomNav } from "@/components/home/mobile-bottom-nav";
 import { SeeAll } from "@/components/home/poster-row";
 import { ContinueWatchingCard } from "@/components/home/continue-watching-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileBanner } from "@/components/profile/profile-banner";
-import { StatsRow } from "@/components/profile/profile-stats";
-import { UpNextGrid } from "@/components/profile/up-next";
+import { StatsRow, MobileStatsGrid } from "@/components/profile/profile-stats";
+import { UpNextGrid, UpNextRail } from "@/components/profile/up-next";
+import { MobileContinueList } from "@/components/profile/continue-card";
 import { ActivityFeed } from "@/components/profile/activity-feed";
 import {
   GenreBreakdown,
@@ -29,8 +32,10 @@ import {
 import { useWatchlist } from "@/hooks/use-watchlist";
 import { useCalendar } from "@/hooks/use-calendar";
 import { useEvents, useMe, useProfileStats, useWrapped } from "@/hooks/use-profile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { buildReleaseLookup, isContinueWatching } from "@/lib/watchlist-status";
 import { useAuthStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
 
 function SectionHead({ title, action }: { title: string; action?: ReactNode }) {
@@ -44,11 +49,69 @@ function SectionHead({ title, action }: { title: string; action?: ReactNode }) {
   );
 }
 
+function MobileSection({
+  title,
+  action,
+  href,
+  className,
+  children,
+}: {
+  title: string;
+  action?: string;
+  href?: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className={cn("mt-7", className)}>
+      <div className="mb-3.5 flex items-end justify-between gap-3">
+        <h2 className="font-display text-[25px] leading-[1.02] tracking-[-0.005em] text-balance text-foreground">
+          {title}
+        </h2>
+        {action && href && (
+          <Link
+            href={href}
+            className="inline-flex shrink-0 items-center gap-1 pb-0.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {action}
+            <ChevronRight size={11} />
+          </Link>
+        )}
+      </div>
+      {children}
+    </section>
+  );
+}
+
 function StatsSkeleton() {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-[repeat(auto-fit,minmax(170px,1fr))] md:gap-3.5">
       {Array.from({ length: 6 }).map((_, i) => (
         <Skeleton key={i} className="h-[116px] w-full md:h-[132px]" />
+      ))}
+    </div>
+  );
+}
+
+function MobileStatsSkeleton() {
+  return (
+    <div className="grid grid-cols-2 gap-px border border-border bg-border">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="flex flex-col gap-2 bg-[var(--bg-elev)] p-4">
+          <Skeleton className="h-2.5 w-20" />
+          <Skeleton className="h-7 w-14" />
+          <Skeleton className="h-2 w-24" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ActivitySkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Skeleton key={i} className="h-14 w-full" />
       ))}
     </div>
   );
@@ -67,6 +130,7 @@ export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.token !== null);
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (hasHydrated && !isAuthenticated) router.replace("/");
@@ -144,76 +208,140 @@ export default function ProfilePage() {
 
       <ProfileBanner user={identity} />
 
-      <main className="mx-auto max-w-[1280px] px-5 pt-9 pb-20 md:px-10 md:pt-11">
-        {/* Stats overview */}
-        <section>{statsPending ? <StatsSkeleton /> : <StatsRow stats={statRows} />}</section>
+      {isMobile ? (
+        <main className="px-[18px] pt-5 pb-6">
+          {/* Stats overview */}
+          <section>
+            {statsPending ? (
+              <MobileStatsSkeleton />
+            ) : (
+              <MobileStatsGrid stats={statRows} />
+            )}
+          </section>
 
-        {/* Continue watching */}
-        {continueWatching.length > 0 && (
-          <section className="mt-12 md:mt-14">
-            <SectionHead
+          {/* Continue watching */}
+          {continueWatching.length > 0 && (
+            <MobileSection
               title={t.profile.sections.continueWatching}
-              action={<SeeAll href="/watchlist">{t.profile.links.watchlist}</SeeAll>}
-            />
-            <div className="grid grid-cols-1 gap-2.5 md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))] md:gap-4">
-              {continueWatching.map((item) => (
-                <ContinueWatchingCard key={item.id} item={item} />
-              ))}
-            </div>
-          </section>
-        )}
+              action={t.profile.links.watchlist}
+              href="/watchlist"
+            >
+              <MobileContinueList items={continueWatching} />
+            </MobileSection>
+          )}
 
-        {/* Up next */}
-        {upNext.length > 0 && (
-          <section className="mt-12 md:mt-14">
-            <SectionHead title={t.profile.sections.upNext} />
-            <UpNextGrid items={upNext} />
-          </section>
-        )}
+          {/* Up next */}
+          {upNext.length > 0 && (
+            <MobileSection title={t.profile.sections.upNext}>
+              <UpNextRail items={upNext} />
+            </MobileSection>
+          )}
 
-        {/* Activity + sidebar */}
-        <section className="mt-12 md:mt-14">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,1fr)] lg:gap-14">
-            <div>
+          {/* This week */}
+          <MobileSection
+            title={t.profile.sections.thisWeek}
+            action={t.profile.links.calendar}
+            href="/calendar"
+          >
+            {upcoming.length > 0 ? (
+              <UpcomingWeek items={upcoming} />
+            ) : (
+              <EmptyText>{t.profile.empty.upcoming}</EmptyText>
+            )}
+          </MobileSection>
+
+          {/* Recent activity */}
+          <MobileSection
+            title={t.profile.sections.recentActivity}
+            action={t.profile.links.fullHistory}
+            href="/profile/activity"
+          >
+            {eventsLoading ? (
+              <ActivitySkeleton />
+            ) : activity.length > 0 ? (
+              <ActivityFeed entries={activity} />
+            ) : (
+              <EmptyText>{t.profile.empty.activity}</EmptyText>
+            )}
+          </MobileSection>
+
+          {/* Favorite genres */}
+          <MobileSection title={t.profile.sections.favoriteGenres}>
+            {genres.length > 0 ? (
+              <GenreBreakdown genres={genres} />
+            ) : (
+              <EmptyText>{t.profile.empty.genres}</EmptyText>
+            )}
+          </MobileSection>
+        </main>
+      ) : (
+        <main className="mx-auto max-w-[1280px] px-5 pt-9 pb-20 md:px-10 md:pt-11">
+          {/* Stats overview */}
+          <section>{statsPending ? <StatsSkeleton /> : <StatsRow stats={statRows} />}</section>
+
+          {/* Continue watching */}
+          {continueWatching.length > 0 && (
+            <section className="mt-12 md:mt-14">
               <SectionHead
-                title={t.profile.sections.recentActivity}
-                action={<SeeAll href="/watchlist">{t.profile.links.fullHistory}</SeeAll>}
+                title={t.profile.sections.continueWatching}
+                action={<SeeAll href="/watchlist">{t.profile.links.watchlist}</SeeAll>}
               />
-              {eventsLoading ? (
-                <div className="flex flex-col gap-2">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <Skeleton key={i} className="h-14 w-full" />
-                  ))}
-                </div>
-              ) : activity.length > 0 ? (
-                <ActivityFeed entries={activity} />
-              ) : (
-                <EmptyText>{t.profile.empty.activity}</EmptyText>
-              )}
+              <div className="grid grid-cols-1 gap-2.5 md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))] md:gap-4">
+                {continueWatching.map((item) => (
+                  <ContinueWatchingCard key={item.id} item={item} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Up next */}
+          {upNext.length > 0 && (
+            <section className="mt-12 md:mt-14">
+              <SectionHead title={t.profile.sections.upNext} />
+              <UpNextGrid items={upNext} />
+            </section>
+          )}
+
+          {/* Activity + sidebar */}
+          <section className="mt-12 md:mt-14">
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,1fr)] lg:gap-14">
+              <div>
+                <SectionHead
+                  title={t.profile.sections.recentActivity}
+                  action={<SeeAll href="/profile/activity">{t.profile.links.fullHistory}</SeeAll>}
+                />
+                {eventsLoading ? (
+                  <ActivitySkeleton />
+                ) : activity.length > 0 ? (
+                  <ActivityFeed entries={activity} />
+                ) : (
+                  <EmptyText>{t.profile.empty.activity}</EmptyText>
+                )}
+              </div>
+              <aside className="flex flex-col gap-11 lg:sticky lg:top-22 lg:self-start">
+                <SidebarPanel title={t.profile.sections.favoriteGenres}>
+                  {genres.length > 0 ? (
+                    <GenreBreakdown genres={genres} />
+                  ) : (
+                    <EmptyText>{t.profile.empty.genres}</EmptyText>
+                  )}
+                </SidebarPanel>
+                <SidebarPanel
+                  title={t.profile.sections.thisWeek}
+                  action={t.profile.links.calendar}
+                  href="/calendar"
+                >
+                  {upcoming.length > 0 ? (
+                    <UpcomingWeek items={upcoming} />
+                  ) : (
+                    <EmptyText>{t.profile.empty.upcoming}</EmptyText>
+                  )}
+                </SidebarPanel>
+              </aside>
             </div>
-            <aside className="flex flex-col gap-11 lg:sticky lg:top-22 lg:self-start">
-              <SidebarPanel title={t.profile.sections.favoriteGenres}>
-                {genres.length > 0 ? (
-                  <GenreBreakdown genres={genres} />
-                ) : (
-                  <EmptyText>{t.profile.empty.genres}</EmptyText>
-                )}
-              </SidebarPanel>
-              <SidebarPanel
-                title={t.profile.sections.thisWeek}
-                action={t.profile.links.calendar}
-                href="/calendar"
-              >
-                {upcoming.length > 0 ? (
-                  <UpcomingWeek items={upcoming} />
-                ) : (
-                  <EmptyText>{t.profile.empty.upcoming}</EmptyText>
-                )}
-              </SidebarPanel>
-            </aside>
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
+      )}
 
       <MobileBottomNav active="you" />
     </div>

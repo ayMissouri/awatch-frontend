@@ -33,3 +33,30 @@ export function StatsRow({ stats }: { stats: ProfileStat[] }) {
     </div>
   );
 }
+
+export function MobileStatsGrid({ stats }: { stats: ProfileStat[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-px border border-border bg-border">
+      {stats.map((s) => (
+        <div key={s.key} className="flex flex-col gap-1.5 bg-[var(--bg-elev)] p-4">
+          <span className="font-mono text-[9.5px] tracking-[0.07em] text-muted-foreground uppercase">
+            {t.profile.stats[s.key]}
+          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-mono text-[30px] font-medium leading-none tracking-[-0.02em] text-[var(--fg-strong)]">
+              {s.value}
+            </span>
+            {s.unit && (
+              <span className="font-mono text-xs text-muted-foreground uppercase">
+                {s.unit}
+              </span>
+            )}
+          </div>
+          <span className="truncate font-mono text-[9px] tracking-[0.05em] text-[var(--fg-subtle)] uppercase">
+            {s.meta}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}

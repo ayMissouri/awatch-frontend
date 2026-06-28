@@ -52,6 +52,9 @@ export const profile = {
     newSeason: "New season",
     fromWatchlist: "From watchlist",
   },
+  continue: {
+    updated: (when: string) => `Updated ${when}`,
+  },
   activity: {
     untitled: "Untitled",
     verb: {
@@ -76,6 +79,22 @@ export const profile = {
       minsAgo: (n: number) => `${n}m ago`,
       hoursAgo: (n: number) => `${n}h ago`,
     },
+    day: {
+      today: "Today",
+      yesterday: "Yesterday",
+    },
+    daySummary: {
+      episodes: (n: number) => `${n} ${n === 1 ? "episode" : "episodes"}`,
+      films: (n: number) => `${n} ${n === 1 ? "film" : "films"}`,
+      finished: (n: number) => `${n} finished`,
+      paused: (n: number) => `${n} paused`,
+    },
+    filter: {
+      all: "All",
+      watched: "Watched",
+      finished: "Finished",
+      paused: "Paused",
+    },
   },
   upcoming: {
     today: "Today",
@@ -91,5 +110,23 @@ export const profile = {
     genres: "Watch a few titles to see your top genres.",
     upcoming: "Nothing scheduled in the next week.",
     upNext: "You're all caught up — nothing queued.",
+  },
+  activityPage: {
+    title: "Activity",
+    back: "Profile",
+    subtitle: (events: number, days: number) =>
+      `${events} ${events === 1 ? "event" : "events"} · ${days} ${days === 1 ? "day" : "days"}`,
+    empty: "No tracked activity yet.",
+    emptyFiltered: "No activity matches this filter.",
+    emptyRange: "No activity in this period.",
+    showMore: "Show earlier activity",
+    filterLabel: "Filter by type",
+    range: {
+      label: "Date range",
+      d7: "7 days",
+      d30: "30 days",
+      d90: "90 days",
+      all: "All time",
+    },
   },
 };

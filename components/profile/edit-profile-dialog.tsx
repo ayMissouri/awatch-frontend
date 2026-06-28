@@ -18,12 +18,17 @@ import { t } from "@/i18n";
 
 const MAX_DISPLAY_NAME = 50;
 
+const DEFAULT_TRIGGER_CLASS =
+  "inline-flex h-9 items-center gap-2 border border-white/40 bg-black/30 px-3 text-[13px] font-medium text-white transition-colors hover:bg-black/45";
+
 export function EditProfileDialog({
   displayName,
   username,
+  triggerClassName = DEFAULT_TRIGGER_CLASS,
 }: {
   displayName: string;
   username: string;
+  triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(displayName);
@@ -44,10 +49,7 @@ export function EditProfileDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <button
-          type="button"
-          className="inline-flex h-9 items-center gap-2 border border-white/40 bg-black/30 px-3 text-[13px] font-medium text-white transition-colors hover:bg-black/45"
-        >
+        <button type="button" className={triggerClassName}>
           <Settings size={15} />
           {t.profile.editProfile}
         </button>

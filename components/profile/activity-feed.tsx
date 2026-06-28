@@ -3,15 +3,9 @@ import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
 import {
   ACTIVITY_BUCKET_ORDER,
+  ACTIVITY_VERB_COLOR,
   type ActivityEntry,
-  type ActivityType,
 } from "@/components/profile/profile-data";
-
-const VERB_COLOR: Record<ActivityType, string> = {
-  watched: "text-marquee",
-  finished: "text-[#7ec19a]",
-  paused: "text-[#e0b04e]",
-};
 
 function ActivityRow({ entry }: { entry: ActivityEntry }) {
   return (
@@ -26,7 +20,7 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
           <span
             className={cn(
               "shrink-0 text-[11px] font-semibold tracking-[0.06em] uppercase",
-              VERB_COLOR[entry.type],
+              ACTIVITY_VERB_COLOR[entry.type],
             )}
           >
             {t.profile.activity.verb[entry.type]}

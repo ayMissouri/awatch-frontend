@@ -1,4 +1,4 @@
-import { imageUrl } from "@/lib/utils";
+import { detailHref, imageUrl } from "@/lib/utils";
 import { t } from "@/i18n";
 import type {
   CalendarEntry,
@@ -262,6 +262,143 @@ export function buildActivity(
     if (out.length >= limit) break;
   }
   return out;
+}
+
+export const ACTIVITY_VERB_COLOR: Record<ActivityType, string> = {
+  watched: "text-marquee",
+  finished: "text-[#7ec19a]",
+  paused: "text-[#e0b04e]",
+};
+
+export type ActivityFilter = ActivityType | "all";
+
+export function activityTypeOf(ev: UserEvent): ActivityType | null {
+  return verbFor(ev);
+}
+
+export interface ActivityDayEntry {
+  type: ActivityType;
+  title: string;
+  poster?: string;
+  sub: string;
+  time: string;
+  href?: string;
+}
+
+export interface ActivityDay {
+  key: string;
+  label: string;
+  date: string;
+  isToday: boolean;
+  summary: string;
+  entries: ActivityDayEntry[];
+}
+
+interface DayCounts {
+  episodes: number;
+  films: number;
+  finished: number;
+  paused: number;
+}
+
+function dayLabels(dayStart: number, today: number, nowYear: number) {
+  const d = new Date(dayStart);
+  const dd = t.profile.activity.day;
+  if (dayStart === today || dayStart === today - 86_400_000) {
+    return {
+      label: dayStart === today ? dd.today : dd.yesterday,
+      date: d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+    };
+  }
+  return {
+    label: d.toLocaleDateString("en-US", { weekday: "long" }),
+    date: d.toLocaleDateString(
+      "en-US",
+      d.getFullYear() === nowYear
+        ? { month: "short", day: "numeric" }
+        : { month: "short", day: "numeric", year: "numeric" },
+    ),
+  };
+}
+
+function daySummary(c: DayCounts): string {
+  const s = t.profile.activity.daySummary;
+  const parts: string[] = [];
+  if (c.episodes) parts.push(s.episodes(c.episodes));
+  if (c.films) parts.push(s.films(c.films));
+  if (c.finished) parts.push(s.finished(c.finished));
+  if (c.paused) parts.push(s.paused(c.paused));
+  return parts.join(" · ");
+}
+
+function detailHrefFor(ev: UserEvent): string | undefined {
+  const id = ev.imdb_id || ev.item_id;
+  if (!id) return undefined;
+  return detailHref(ev.media_type === "movie" ? "movie" : "tv", id, "from=activity");
+}
+
+export function buildActivityDays(
+  events: UserEvent[],
+  posters: Map<string, string | undefined>,
+  now: number,
+  filter: ActivityFilter = "all",
+): ActivityDay[] {
+  const today = startOfDay(now);
+  const nowYear = new Date(now).getFullYear();
+  const days = new Map<number, ActivityDay>();
+  const counts = new Map<number, DayCounts>();
+  const order: number[] = [];
+
+  for (const ev of events) {
+    const verb = verbFor(ev);
+    if (!verb) continue;
+    if (filter !== "all" && verb !== filter) continue;
+
+    const dayStart = startOfDay(ev.occurred_at);
+    let day = days.get(dayStart);
+    if (!day) {
+      const { label, date } = dayLabels(dayStart, today, nowYear);
+      day = { key: String(dayStart), label, date, isToday: dayStart === today, summary: "", entries: [] };
+      days.set(dayStart, day);
+      counts.set(dayStart, { episodes: 0, films: 0, finished: 0, paused: 0 });
+      order.push(dayStart);
+    }
+
+    const poster =
+      (ev.item_id && posters.get(ev.item_id)) ||
+      (ev.imdb_id && posters.get(ev.imdb_id)) ||
+      undefined;
+    day.entries.push({
+      type: verb,
+      title: ev.title || t.profile.activity.untitled,
+      poster,
+      sub: subFor(ev, verb),
+      time: new Date(ev.occurred_at).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+      href: detailHrefFor(ev),
+    });
+
+    const c = counts.get(dayStart)!;
+    if (verb === "watched") {
+      if (ev.event_type === "episode_watch") {
+        c.episodes += Math.max(1, Number(ev.metadata?.delta ?? 1));
+      } else {
+        c.films += 1;
+      }
+    } else if (verb === "finished") {
+      c.finished += 1;
+    } else if (verb === "paused") {
+      c.paused += 1;
+    }
+  }
+
+  return order.map((k) => {
+    const day = days.get(k)!;
+    day.summary = daySummary(counts.get(k)!);
+    return day;
+  });
 }
 
 export interface Genre {

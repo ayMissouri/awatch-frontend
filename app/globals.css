@@ -143,6 +143,10 @@
   * {
     @apply border-border outline-ring/50;
     }
+  ::selection {
+    background-color: color-mix(in oklab, var(--marquee-500) 30%, transparent);
+    color: inherit;
+    }
   body {
     @apply bg-background text-foreground;
     }

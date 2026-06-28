@@ -71,6 +71,8 @@ export function originCrumbs(sp: URLSearchParams | ReadonlyURLSearchParams): Cru
       return [{ label: t.auth.breadcrumbs.watchlist, href: "/watchlist" }]
     case "calendar":
       return [{ label: t.auth.breadcrumbs.calendar, href: "/calendar" }]
+    case "activity":
+      return [{ label: t.auth.breadcrumbs.activity, href: "/profile/activity" }]
     case "search":
       return [{ label: t.auth.breadcrumbs.search }]
     default:

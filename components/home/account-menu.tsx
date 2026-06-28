@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import {
+  Activity,
   Bookmark,
   Calendar,
   Clock,
@@ -83,6 +84,11 @@ export function AccountMenu({
             icon={User}
             label={t.home.account.yourProfile}
             href="/profile"
+          />
+          <NavMenuItem
+            icon={Activity}
+            label={t.home.account.activity}
+            href="/profile/activity"
           />
           <NavMenuItem
             icon={Bookmark}

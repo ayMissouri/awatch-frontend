@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { authApi, eventsApi, statsApi, type Me } from "@/lib/api"
 import { useAuthStore } from "@/lib/store"
 
@@ -61,11 +66,15 @@ export function useWrapped(year?: number) {
   })
 }
 
-export function useEvents(limit = 50) {
+export function useEvents(limit = 50, range?: { from?: number; to?: number }) {
   const isAuthenticated = useAuthStore((s) => s.token !== null)
+  const from = range?.from ?? 0
+  const to = range?.to ?? 0
   return useQuery({
-    queryKey: ["events", limit],
-    queryFn: () => eventsApi.list(limit),
+    queryKey: ["events", limit, from, to],
+    queryFn: () =>
+      eventsApi.list({ limit, from: from || undefined, to: to || undefined }),
     enabled: isAuthenticated,
+    placeholderData: keepPreviousData,
   })
 }
