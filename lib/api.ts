@@ -28,8 +28,21 @@ async function apiFetch<T>(
 }
 
 // Auth
+export interface Me {
+  id: string
+  username: string
+  avatar?: string
+  display_name?: string
+  created_at?: number
+}
+
 export const authApi = {
-  me: () => apiFetch<{ id: string; username: string; avatar?: string }>("/auth/me"),
+  me: () => apiFetch<Me>("/auth/me"),
+  updateMe: (displayName: string) =>
+    apiFetch<Me>("/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify({ display_name: displayName }),
+    }),
 }
 
 // Watchlist
@@ -302,4 +315,70 @@ export interface SeriesDetail extends MovieDetail {
 export const metaApi = {
   movie: (id: string) => apiFetch<MovieDetail>(`/meta/movie/${id}`),
   series: (id: string) => apiFetch<SeriesDetail>(`/meta/series/${id}`),
+}
+
+// Stats
+export interface LabelCount {
+  label: string
+  count: number
+}
+
+export interface ProfileStats {
+  total_events: number
+  movies_watched: number
+  episodes_watched: number
+  shows_completed: number
+  items_added: number
+  watch_time_minutes: number
+  current_streak_days: number
+  longest_streak_days: number
+  top_genres: LabelCount[]
+  top_titles: LabelCount[]
+  first_event_at?: number
+  last_event_at?: number
+}
+
+export interface WrappedStats {
+  year: number
+  watch_time_minutes: number
+  movies_watched: number
+  episodes_watched: number
+  shows_started: number
+  shows_completed: number
+  items_added: number
+  unique_titles: number
+  top_genres: LabelCount[]
+  top_titles: LabelCount[]
+  longest_streak_days: number
+}
+
+export const statsApi = {
+  profile: () => apiFetch<ProfileStats>("/stats"),
+  wrapped: (year?: number) =>
+    apiFetch<WrappedStats>(`/stats/wrapped${year ? `?year=${year}` : ""}`),
+}
+
+export interface UserEvent {
+  id: number
+  event_type: string
+  source?: string
+  item_id?: string
+  media_type?: string
+  imdb_id?: string
+  title?: string
+  season?: number
+  episode?: number
+  runtime_minutes?: number
+  genres?: string[]
+  release_year?: number
+  metadata?: Record<string, unknown>
+  occurred_at: number
+}
+
+export interface EventsResponse {
+  items: UserEvent[]
+}
+
+export const eventsApi = {
+  list: (limit = 50) => apiFetch<EventsResponse>(`/events?limit=${limit}`),
 }

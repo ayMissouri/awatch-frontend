@@ -24,6 +24,7 @@ import { t } from "@/i18n";
 interface DrawerUser {
   username: string;
   avatar?: string;
+  display_name?: string;
 }
 
 type DrawerNavItem = {
@@ -129,19 +130,28 @@ export function MobileDrawer({
                 <X />
               </HomeIconButton>
             </div>
-            <div className="mt-4.5 flex items-center gap-[11px]">
+            <Link
+              href="/profile"
+              onClick={close}
+              className="mt-4.5 flex items-center gap-[11px] transition-opacity hover:opacity-80"
+            >
               <Avatar size="lg">
                 <AvatarImage src={user.avatar} alt={user.username} />
                 <AvatarFallback>
-                  {user.username.slice(0, 1).toUpperCase()}
+                  {(user.display_name || user.username).slice(0, 1).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
                 <div className="truncate text-sm font-semibold text-white">
-                  {user.username}
+                  {user.display_name || user.username}
                 </div>
+                {user.display_name && (
+                  <div className="truncate font-mono text-[11px] text-muted-foreground">
+                    @{user.username}
+                  </div>
+                )}
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Nav */}

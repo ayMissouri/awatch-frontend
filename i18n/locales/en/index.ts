@@ -6,6 +6,7 @@ import { calendar } from "./calendar";
 import { detail } from "./detail";
 import { auth } from "./auth";
 import { meta } from "./meta";
+import { profile } from "./profile";
 
 export const en = {
   common,
@@ -16,4 +17,5 @@ export const en = {
   detail,
   auth,
   meta,
+  profile,
 };

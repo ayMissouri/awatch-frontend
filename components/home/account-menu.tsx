@@ -25,6 +25,7 @@ import { t } from "@/i18n";
 interface AccountUser {
   username: string;
   avatar?: string;
+  display_name?: string;
 }
 
 export function AccountMenu({
@@ -61,23 +62,27 @@ export function AccountMenu({
             <Avatar size="lg">
               <AvatarImage src={user.avatar} alt={user.username} />
               <AvatarFallback>
-                {user.username.slice(0, 1).toUpperCase()}
+                {(user.display_name || user.username).slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
               <div className="truncate text-sm leading-tight font-semibold text-white">
-                {user.username}
+                {user.display_name || user.username}
               </div>
+              {user.display_name && (
+                <div className="truncate font-mono text-[11px] text-muted-foreground">
+                  @{user.username}
+                </div>
+              )}
             </div>
           </div>
 
           <NavMenuSeparator />
 
-          {/* Profile/Settings are placeholders until I create them. */}
           <NavMenuItem
             icon={User}
             label={t.home.account.yourProfile}
-            href="/watchlist"
+            href="/profile"
           />
           <NavMenuItem
             icon={Bookmark}

@@ -5,6 +5,7 @@ interface User {
   id: string
   username: string
   avatar?: string
+  display_name?: string
 }
 
 interface AuthStore {
@@ -12,6 +13,7 @@ interface AuthStore {
   user: User | null
   hasHydrated: boolean
   setAuth: (token: string, user: User) => void
+  setUser: (user: User) => void
   clearAuth: () => void
   isAuthenticated: () => boolean
   setHasHydrated: (hasHydrated: boolean) => void
@@ -25,6 +27,8 @@ export const useAuthStore = create<AuthStore>()(
       hasHydrated: false,
 
       setAuth: (token, user) => set({ token, user }),
+
+      setUser: (user) => set({ user }),
 
       clearAuth: () => set({ token: null, user: null }),
 

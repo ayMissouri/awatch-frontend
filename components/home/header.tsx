@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Bell, ChevronDown, LogIn, Menu, Search } from "lucide-react";
+import { Bell, ChevronDown, LogIn, Search } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { HomeButton, HomeIconButton } from "@/components/home/home-button";
 import { AccountMenu } from "@/components/home/account-menu";
@@ -12,6 +12,7 @@ import { MobileDrawer } from "@/components/home/mobile-drawer";
 import { MobileSearchOverlay } from "@/components/home/mobile-search-overlay";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import { useNotifications } from "@/hooks/use-notifications";
+import { useMe } from "@/hooks/use-profile";
 import { useNavUI } from "@/lib/ui-store";
 import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
@@ -29,13 +30,16 @@ export function Header({
   user,
   active = "home",
 }: {
-  user?: { username: string; avatar?: string } | null;
+  user?: { username: string; avatar?: string; display_name?: string } | null;
   active?: string;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const setPaletteOpen = useNavUI((s) => s.setPaletteOpen);
   const setDrawerOpen = useNavUI((s) => s.setDrawerOpen);
   const setSearchOpen = useNavUI((s) => s.setSearchOpen);
+
+  // Refreshes the persisted user from /auth/me (full avatar URL, display name).
+  useMe();
 
   const { data: wl } = useWatchlist({ per_page: 1 });
   const watchlistCount = wl?.pagination.total;
@@ -159,18 +163,20 @@ export function Header({
                 }
               />
 
-              {/* Mobile: hamburger opens the drawer */}
-              <HomeIconButton
-                className="md:hidden"
-                size={36}
-                variant="ghost"
+              <button
+                type="button"
+                className="flex items-center outline-none transition-opacity hover:opacity-80 md:hidden"
                 onClick={() => setDrawerOpen(true)}
                 aria-label={t.home.header.a11y.openMenu}
               >
-                <Menu />
-              </HomeIconButton>
+                <Avatar size="sm">
+                  <AvatarImage src={user.avatar} alt={user.username} />
+                  <AvatarFallback>
+                    {user.username.slice(0, 1).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
 
-              {/* Desktop: avatar opens the account menu */}
               <div className="hidden md:block">
                 <AccountMenu
                   user={user}
