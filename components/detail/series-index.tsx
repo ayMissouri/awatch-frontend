@@ -15,15 +15,22 @@ import {
   CastGrid,
   EASE_OUT,
   EpisodeRow,
+  ExternalIdLink,
   Eyebrow,
   Legend,
   MetaInline,
   MetaRow,
+  SeasonSortToggle,
   StarRating,
   StatusPill,
+  formatDate,
   groupSeasons,
+  imdbUrl,
   isEpisodeUnaired,
+  tmdbUrl,
+  tvdbUrl,
   type DetailEpisode,
+  type SeasonOrder,
 } from "@/components/detail/shared";
 import {
   useDeleteWatchlistItem,
@@ -52,6 +59,70 @@ function statusKindOf(status?: string): "returning" | "ended" | "planned" {
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 const nowMs = () => Date.now();
+
+const STRIP_NUMBERED_MAX = 36;
+
+function SeasonStrip({
+  episodes,
+  total,
+  nextId,
+}: {
+  episodes: DetailEpisode[];
+  total: number;
+  nextId?: string | null;
+}) {
+  const numbered = total <= STRIP_NUMBERED_MAX;
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))`,
+        gap: numbered ? 4 : total > 100 ? 1 : 2,
+      }}
+    >
+      {episodes.map((ep) => {
+        const isNext = !!nextId && ep.id === nextId;
+        return (
+          <div
+            key={ep.id}
+            title={`E${ep.episode} · ${ep.title}`}
+            style={{
+              height: 28,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: ep.watched
+                ? "var(--marquee-500)"
+                : isNext
+                  ? numbered
+                    ? "rgba(228,79,47,0.18)"
+                    : "rgba(228,79,47,0.55)"
+                  : numbered
+                    ? "transparent"
+                    : "var(--border-strong)",
+              border: numbered
+                ? ep.watched || isNext
+                  ? "1px solid var(--marquee-500)"
+                  : "1px solid var(--border-strong)"
+                : "none",
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              fontWeight: 500,
+              color: ep.watched
+                ? "var(--ink-50)"
+                : isNext
+                  ? "var(--marquee-500)"
+                  : "var(--fg-subtle)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {numbered ? pad2(ep.episode) : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
   const genres = s.genre ?? s.genres ?? [];
@@ -99,6 +170,9 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
     return ordered[0]?.season ?? null;
   });
   const [hoverSeason, setHoverSeason] = React.useState<number | null>(null);
+  const [seasonOrder, setSeasonOrder] = React.useState<SeasonOrder>("oldest");
+  const displaySeasons =
+    seasonOrder === "newest" ? [...seasons].reverse() : seasons;
 
   const updateProgress = useUpdateProgress();
   const upsert = useUpsertWatchlistItem();
@@ -423,6 +497,21 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
             </div>
           </div>
 
+          {seasons.length > 1 && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: 14,
+              }}
+            >
+              <SeasonSortToggle
+                value={seasonOrder}
+                onChange={setSeasonOrder}
+              />
+            </div>
+          )}
+
           <div
             style={{
               display: "flex",
@@ -432,7 +521,7 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
               border: "1px solid var(--border)",
             }}
           >
-            {seasons.map((season) => {
+            {displaySeasons.map((season) => {
               const isOpen = openSeason === season.season;
               return (
                 <div key={season.season} style={{ background: "var(--bg)" }}>
@@ -485,51 +574,12 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
                       </span>
                     </div>
 
-                    {/* Episode pills */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: `repeat(${season.total}, minmax(0, 1fr))`,
-                        gap: 4,
-                      }}
-                    >
-                      {season.episodes.map((ep) => {
-                        const isNext = !!next && ep.id === next.id;
-                        return (
-                          <div
-                            key={ep.id}
-                            title={`E${ep.episode} · ${ep.title}`}
-                            style={{
-                              height: 28,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              background: ep.watched
-                                ? "var(--marquee-500)"
-                                : isNext
-                                  ? "rgba(228,79,47,0.18)"
-                                  : "transparent",
-                              border: ep.watched
-                                ? "1px solid var(--marquee-500)"
-                                : isNext
-                                  ? "1px solid var(--marquee-500)"
-                                  : "1px solid var(--border-strong)",
-                              fontFamily: "var(--font-mono)",
-                              fontSize: 10,
-                              fontWeight: 500,
-                              color: ep.watched
-                                ? "var(--ink-50)"
-                                : isNext
-                                  ? "var(--marquee-500)"
-                                  : "var(--fg-subtle)",
-                              letterSpacing: "0.04em",
-                            }}
-                          >
-                            {pad2(ep.episode)}
-                          </div>
-                        );
-                      })}
-                    </div>
+                    {/* Episode strip */}
+                    <SeasonStrip
+                      episodes={season.episodes}
+                      total={season.total}
+                      nextId={next?.id}
+                    />
 
                     <div style={{ textAlign: "right" }}>
                       <div
@@ -638,29 +688,29 @@ export function SeriesIndex({ series: s, item, user }: SeriesIndexProps) {
               {s.released && (
                 <MetaRow label={t.detail.labels.firstAired}>
                   <span style={{ fontFamily: "var(--font-mono)" }}>
-                    {s.released}
+                    {formatDate(s.released)}
                   </span>
                 </MetaRow>
               )}
               {s.imdb_id && (
                 <MetaRow label={t.detail.labels.imdb}>
-                  <span style={{ fontFamily: "var(--font-mono)" }}>
+                  <ExternalIdLink href={imdbUrl(s.imdb_id)!}>
                     {s.imdb_id}
-                  </span>
+                  </ExternalIdLink>
                 </MetaRow>
               )}
               {s.moviedb_id != null && (
                 <MetaRow label={t.detail.labels.tmdb}>
-                  <span style={{ fontFamily: "var(--font-mono)" }}>
+                  <ExternalIdLink href={tmdbUrl(s.moviedb_id, "tv")!}>
                     {s.moviedb_id}
-                  </span>
+                  </ExternalIdLink>
                 </MetaRow>
               )}
               {s.tvdb_id != null && (
                 <MetaRow label={t.detail.labels.tvdb}>
-                  <span style={{ fontFamily: "var(--font-mono)" }}>
+                  <ExternalIdLink href={tvdbUrl(s.tvdb_id)!}>
                     {s.tvdb_id}
-                  </span>
+                  </ExternalIdLink>
                 </MetaRow>
               )}
               {s.awards && (

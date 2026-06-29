@@ -2,13 +2,135 @@
 "use client";
 
 import * as React from "react";
-import { Check, Play, Star } from "lucide-react";
+import { Check, ExternalLink, Play, Star } from "lucide-react";
 import type { Episode } from "@/lib/api";
 import { t } from "@/i18n";
 
 export const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export type DetailEpisode = Episode & { watched: boolean; runtime?: string };
+
+export function formatDate(value?: string): string | null {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function imdbUrl(id?: string | null): string | null {
+  return id ? `https://www.imdb.com/title/${id}/` : null;
+}
+export function tmdbUrl(
+  id?: number | null,
+  kind: "movie" | "tv" = "movie",
+): string | null {
+  return id != null ? `https://www.themoviedb.org/${kind}/${id}` : null;
+}
+export function tvdbUrl(id?: number | null): string | null {
+  return id != null ? `https://thetvdb.com/dereferrer/series/${id}` : null;
+}
+
+export type SeasonOrder = "oldest" | "newest";
+
+export function SeasonSortToggle({
+  value,
+  onChange,
+}: {
+  value: SeasonOrder;
+  onChange: (order: SeasonOrder) => void;
+}) {
+  const options: { id: SeasonOrder; label: string }[] = [
+    { id: "oldest", label: t.detail.sort.oldest },
+    { id: "newest", label: t.detail.sort.newest },
+  ];
+  return (
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 10,
+          fontWeight: 500,
+          letterSpacing: "0.10em",
+          textTransform: "uppercase",
+          color: "var(--fg-subtle)",
+        }}
+      >
+        {t.detail.sort.label}
+      </span>
+      <div
+        style={{ display: "inline-flex", border: "1px solid var(--border)" }}
+      >
+        {options.map((opt, i) => {
+          const active = opt.id === value;
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange(opt.id)}
+              style={{
+                appearance: "none",
+                cursor: "pointer",
+                padding: "6px 11px",
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                background: active ? "var(--bg-elev)" : "transparent",
+                color: active ? "var(--fg-strong)" : "var(--fg-subtle)",
+                borderLeft: i > 0 ? "1px solid var(--border)" : "none",
+                transition: `color 140ms ${EASE_OUT}, background 140ms ${EASE_OUT}`,
+              }}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function ExternalIdLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
+        fontFamily: "var(--font-mono)",
+        color: hover ? "var(--marquee-500)" : "var(--fg)",
+        textDecoration: hover ? "underline" : "none",
+        textUnderlineOffset: 3,
+        cursor: "pointer",
+        transition: `color 140ms ${EASE_OUT}`,
+      }}
+    >
+      {children}
+      <ExternalLink
+        size={11}
+        style={{ color: "var(--fg-subtle)", flexShrink: 0 }}
+      />
+    </a>
+  );
+}
 
 export function isEpisodeUnaired(ep: DetailEpisode): boolean {
   if (ep.released) {

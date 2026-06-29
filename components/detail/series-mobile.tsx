@@ -25,14 +25,21 @@ import {
 } from "@/components/detail/mobile-shared";
 import {
   EASE_OUT,
+  ExternalIdLink,
   Eyebrow,
   Legend,
   MetaInline,
+  SeasonSortToggle,
   StarRating,
   StatusPill,
+  formatDate,
   groupSeasons,
+  imdbUrl,
   isEpisodeUnaired,
+  tmdbUrl,
+  tvdbUrl,
   type DetailEpisode,
+  type SeasonOrder,
 } from "@/components/detail/shared";
 import type { SeriesDetail, WatchlistItem } from "@/lib/api";
 import { t } from "@/i18n";
@@ -100,6 +107,9 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
     if (itemLastSeason != null && itemLastSeason !== 0) return itemLastSeason;
     return ordered[0]?.season ?? null;
   });
+  const [seasonOrder, setSeasonOrder] = React.useState<SeasonOrder>("oldest");
+  const displaySeasons =
+    seasonOrder === "newest" ? [...seasons].reverse() : seasons;
 
   const updateProgress = useUpdateProgress();
   const upsert = useUpsertWatchlistItem();
@@ -335,6 +345,18 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
           />
         </div>
 
+        {seasons.length > 1 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: `0 ${DPAD}px 14px`,
+            }}
+          >
+            <SeasonSortToggle value={seasonOrder} onChange={setSeasonOrder} />
+          </div>
+        )}
+
         <div
           style={{
             display: "flex",
@@ -345,7 +367,7 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
             borderBottom: "1px solid var(--border)",
           }}
         >
-          {seasons.map((season) => {
+          {displaySeasons.map((season) => {
             const isOpen = openSeason === season.season;
             return (
               <div key={season.season} style={{ background: "var(--bg)" }}>
@@ -513,16 +535,44 @@ export function SeriesIndexMobile({ series: s, item }: SeriesIndexMobileProps) {
               : null,
             s.status ? { label: t.detail.labels.status, value: s.status } : null,
             s.released
-              ? { label: t.detail.labels.firstAired, value: s.released, mono: true }
+              ? {
+                  label: t.detail.labels.firstAired,
+                  value: formatDate(s.released),
+                  mono: true,
+                }
               : null,
             s.country
               ? { label: t.detail.labels.country, value: s.country }
               : null,
             s.imdb_id
-              ? { label: t.detail.labels.imdb, value: s.imdb_id, mono: true }
+              ? {
+                  label: t.detail.labels.imdb,
+                  value: (
+                    <ExternalIdLink href={imdbUrl(s.imdb_id)!}>
+                      {s.imdb_id}
+                    </ExternalIdLink>
+                  ),
+                }
               : null,
             s.moviedb_id != null
-              ? { label: t.detail.labels.tmdb, value: s.moviedb_id, mono: true }
+              ? {
+                  label: t.detail.labels.tmdb,
+                  value: (
+                    <ExternalIdLink href={tmdbUrl(s.moviedb_id, "tv")!}>
+                      {s.moviedb_id}
+                    </ExternalIdLink>
+                  ),
+                }
+              : null,
+            s.tvdb_id != null
+              ? {
+                  label: t.detail.labels.tvdb,
+                  value: (
+                    <ExternalIdLink href={tvdbUrl(s.tvdb_id)!}>
+                      {s.tvdb_id}
+                    </ExternalIdLink>
+                  ),
+                }
               : null,
           ].filter((r): r is NonNullable<typeof r> => !!r)}
         />

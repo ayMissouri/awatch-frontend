@@ -16,7 +16,6 @@ export const detail = {
     trailersAndTeasers: "Trailers & teasers",
     progressMap: "Your progress map",
     catalog: "Catalog",
-    links: "Links",
   },
   status: {
     inProgress: "In progress",
@@ -52,7 +51,6 @@ export const detail = {
     tmdb: "TMDB",
     tvdb: "TVDB",
     awards: "Awards",
-    share: "Share",
   },
   meta: {
     seasons: (n: number) => `${n} season${n === 1 ? "" : "s"}`,
@@ -85,5 +83,10 @@ export const detail = {
   season: {
     label: (n: number) => `Season ${n}`,
     labelPadded: (n: string) => `Season ${n}`,
+  },
+  sort: {
+    label: "Sort",
+    oldest: "Oldest",
+    newest: "Newest",
   },
 };

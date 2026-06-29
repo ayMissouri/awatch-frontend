@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Plus, Info } from "lucide-react";
-import { HomeButton, homeButtonVariants } from "@/components/home/home-button";
+import { Star, Info } from "lucide-react";
+import { homeButtonVariants } from "@/components/home/home-button";
 import { cn, detailHref } from "@/lib/utils";
 import type { DiscoverItem } from "@/lib/api";
 import { t } from "@/i18n";
@@ -61,7 +61,12 @@ export function HeroCarousel({ items }: { items: DiscoverItem[] }) {
           )}
           <div className="pointer-events-none absolute inset-x-0 bottom-8 md:bottom-14">
             <div className="mx-auto max-w-[1440px] px-5 md:px-12">
-              <div className="pointer-events-auto flex max-w-[720px] flex-col gap-3.5">
+              <div
+                className={cn(
+                  "flex max-w-[720px] flex-col gap-3.5",
+                  i === active && "pointer-events-auto",
+                )}
+              >
                 <span className="font-mono text-[10px] font-medium tracking-[0.16em] text-white/75 uppercase">
                   {t.home.hero.trendingNow}
                 </span>
@@ -91,13 +96,6 @@ export function HeroCarousel({ items }: { items: DiscoverItem[] }) {
                   >
                     <Info /> {t.home.hero.viewDetails}
                   </Link>
-                  <HomeButton
-                    variant="outlineLight"
-                    size="lg"
-                    className="w-full md:w-auto"
-                  >
-                    <Plus /> {t.home.hero.addToWatchlist}
-                  </HomeButton>
                 </div>
               </div>
             </div>

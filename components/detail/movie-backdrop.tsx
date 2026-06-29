@@ -4,7 +4,6 @@
 import {
   Bookmark,
   BookmarkCheck,
-  ChevronRight,
   Eye,
   EyeOff,
   MoreHorizontal,
@@ -21,12 +20,14 @@ import { DetailCrumbs } from "@/components/breadcrumbs";
 import {
   CastGrid,
   DetailProgressBar,
+  ExternalIdLink,
   Eyebrow,
   MetaInline,
   MetaRow,
   StarRating,
   StatusPill,
   TrailerTile,
+  imdbUrl,
 } from "@/components/detail/shared";
 import type { MovieDetail, WatchlistItem } from "@/lib/api";
 import { t } from "@/i18n";
@@ -49,12 +50,6 @@ function formatDate(value?: string) {
   });
 }
 
-const LINK_LABELS: Record<string, string> = {
-  imdb: t.detail.labels.imdb,
-  tmdb: t.detail.labels.tmdb,
-  share: t.detail.labels.share,
-};
-
 const CONTENT_MAX = 1180;
 
 export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
@@ -69,9 +64,6 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
     ? Math.round((progress.duration - progress.watched) / 60)
     : 0;
   const trailers = m.trailerStreams ?? [];
-  const externalLinks = (m.links ?? []).filter((l) =>
-    /^https?:\/\//i.test(l.url),
-  );
 
   const upsert = useUpsertWatchlistItem();
   const removeItem = useDeleteWatchlistItem();
@@ -476,9 +468,9 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
               )}
               {m.imdb_id && (
                 <MetaRow label={t.detail.labels.imdb}>
-                  <span style={{ fontFamily: "var(--font-mono)" }}>
+                  <ExternalIdLink href={imdbUrl(m.imdb_id)!}>
                     {m.imdb_id}
-                  </span>
+                  </ExternalIdLink>
                 </MetaRow>
               )}
               {m.awards && (
@@ -489,49 +481,6 @@ export function MovieBackdrop({ movie: m, item, user }: MovieBackdropProps) {
                 </MetaRow>
               )}
             </div>
-
-            {/* Links */}
-            {externalLinks.length > 0 && (
-              <div style={{ marginTop: 28 }}>
-                <Eyebrow color="var(--fg-subtle)">
-                  {t.detail.sections.links}
-                </Eyebrow>
-                <div
-                  style={{
-                    marginTop: 12,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 6,
-                  }}
-                >
-                  {externalLinks.map((l, i) => (
-                    <a
-                      key={`${l.category}-${i}`}
-                      href={l.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "10px 12px",
-                        border: "1px solid var(--border)",
-                        fontFamily: "var(--font-sans)",
-                        fontSize: 13,
-                        color: "var(--fg)",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <span>{LINK_LABELS[l.category] ?? l.name}</span>
-                      <ChevronRight
-                        size={12}
-                        style={{ color: "var(--fg-subtle)" }}
-                      />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
           </aside>
         </div>
       </div>

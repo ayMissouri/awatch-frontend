@@ -85,7 +85,6 @@ export const home = {
   hero: {
     trendingNow: "Trending now",
     viewDetails: "View details",
-    addToWatchlist: "Add to watchlist",
     slideLabel: (n: number) => `Show slide ${n}`,
   },
   loading: {

@@ -13,11 +13,13 @@ import {
 } from "@/components/detail/mobile-shared";
 import {
   DetailProgressBar,
+  ExternalIdLink,
   Eyebrow,
   MetaInline,
   StarRating,
   StatusPill,
   TrailerTile,
+  imdbUrl,
 } from "@/components/detail/shared";
 import { HomeIconButton } from "@/components/home/home-button";
 import {
@@ -280,7 +282,14 @@ export function MovieBackdropMobile({
               ? { label: t.detail.labels.country, value: m.country }
               : null,
             m.imdb_id
-              ? { label: t.detail.labels.imdb, value: m.imdb_id, mono: true }
+              ? {
+                  label: t.detail.labels.imdb,
+                  value: (
+                    <ExternalIdLink href={imdbUrl(m.imdb_id)!}>
+                      {m.imdb_id}
+                    </ExternalIdLink>
+                  ),
+                }
               : null,
             m.awards ? { label: t.detail.labels.awards, value: m.awards } : null,
           ].filter((r): r is NonNullable<typeof r> => !!r)}
